@@ -1,0 +1,21 @@
+{
+  "profileCreation": {
+    "next": "Next",
+    "prev": "Previous",
+    "nameQuestion": "Hello! How can I call you?",
+    "birthdayQuestion": "When is your birthday?",
+    "birthdayInputTitle": "Select your birthday",
+    "musicalGenreQuestion": "What are your favorite musical genres?",
+    "pronounsQuestion": "With which pronouns do you identify?",
+    "lenguageQuestion": "What lenguage do you prefer?",
+    "genres": {
+      "clasica": "clasica",
+      "rock": "rock",
+      "pop": "pop",
+      "folk": "folk",
+      "r&b": "r&b",
+      "regge": "regge",
+      "rap": "rap"
+    }
+  }
+}
