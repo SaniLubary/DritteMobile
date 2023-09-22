@@ -17,6 +17,7 @@ const NameInput = ({ title, setUserProfile }: {
       const userProfile: UserProfile = await locallyRetrieveUserProfile()
       if (userProfile) {
         setText(userProfile.name)
+        answered(title)
       }
     })()
   }, [])

@@ -9,7 +9,7 @@ const ProfileCreationFlowButtons = ({ title, handleNextQuestion, currentQuestion
 
   return (
     <View>
-      <Button disabled={isAnswered(title)} onPress={handleNextQuestion} title={t('profileCreation:next')} />
+      <Button disabled={!isAnswered(title)} onPress={handleNextQuestion} title={t('profileCreation:next')} />
       {currentQuestionIndex > 0 && <Button onPress={handlePrevQuestion} title={t('profileCreation:prev')} />}
     </View>
   )

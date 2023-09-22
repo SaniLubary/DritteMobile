@@ -1,11 +1,11 @@
 import React, { createContext, useState } from 'react';
 
 const initialQuestionsStatusState = [
-  { title: 'profileCreation:nameQuestion', answered: false },
-  { title: 'profileCreation:birthdayQuestion', answered: true },
-  { title: 'profileCreation:musicalGenreQuestion', answered: false },
-  { title: 'profileCreation:pronounsQuestion', answered: false },
-  { title: 'profileCreation:lenguageQuestion', answered: false },
+  { title: 'nameQuestion', answered: false },
+  { title: 'birthdayQuestion', answered: true },
+  { title: 'musicalGenreQuestion', answered: false },
+  { title: 'pronounsQuestion', answered: false },
+  { title: 'lenguageQuestion', answered: false },
 ];
 
 interface IProfileCreationContext {
@@ -30,18 +30,22 @@ const ProfileCreationProvider = ({ children }) => {
 
   const answered = (title) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);
-    questions[questionToUpdateIndex].answered = true;
-    setQuestions([...questions])
+    if (questions[questionToUpdateIndex]) {
+      questions[questionToUpdateIndex].answered = true;
+      setQuestions([...questions])
+    }
   };
 
   const unanswered = (title) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);
-    questions[questionToUpdateIndex].answered = false;
-    setQuestions([...questions])
+    if (questions[questionToUpdateIndex]) {
+      questions[questionToUpdateIndex].answered = false;
+      setQuestions([...questions])
+    }
   };
 
   const isAnswered = (title) => {
-    return !!questions.findIndex(question => question.title === title && question.answered === true)
+    return questions[questions.findIndex(question => question.title === title)].answered
   }
 
   const contextValue = {

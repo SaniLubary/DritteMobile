@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Credentials } from 'react-native-auth0';
 
-const storeToken = async (token: Credentials | undefined) => {
+const locallyStoreToken = async (token: Credentials | undefined) => {
   try {
     await AsyncStorage.setItem('jwtToken', JSON.stringify(token));
   } catch (error) {
@@ -9,7 +9,7 @@ const storeToken = async (token: Credentials | undefined) => {
   }
 };
 
-const retrieveToken = async () => {
+const locallyRetrieveToken = async (): Promise<Credentials | undefined> => {
   try {
     const token = await AsyncStorage.getItem('jwtToken');
     return token && JSON.parse(token);
@@ -18,7 +18,7 @@ const retrieveToken = async () => {
   }
 };
 
-const clearToken = async () => {
+const locallyClearToken = async () => {
   try {
     await AsyncStorage.removeItem('jwtToken');
   } catch (error) {
@@ -26,4 +26,4 @@ const clearToken = async () => {
   }
 };
 
-export {storeToken, retrieveToken, clearToken}
+export { locallyStoreToken, locallyRetrieveToken, locallyClearToken }

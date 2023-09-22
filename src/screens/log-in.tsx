@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
-import { storeToken } from '../services/local-auth-service';
+import { locallyStoreToken } from '../services/local-auth-service';
 
 export const LogIn = ({ navigation: { navigate } }) => {
   const { authorize, isLoading, user } = useAuth0();
@@ -9,7 +9,7 @@ export const LogIn = ({ navigation: { navigate } }) => {
   const onLogin = async () => {
     try {
       const response = await authorize();
-      storeToken(response)
+      locallyStoreToken(response)
     } catch (e) {
       console.log(e);
     }

@@ -5,6 +5,7 @@ interface UserProfile {
   lenguagePreference: string;
   birthDate: Date;
   musicGenres: string[]
+  email: string;
 }
 
 export type { UserProfile }
