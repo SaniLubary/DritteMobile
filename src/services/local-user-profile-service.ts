@@ -3,8 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const locallyStoreUserProfile = async (userProfile: UserProfile) => {
   try {
+    console.log("Saving user profile locally", userProfile)
     await AsyncStorage.setItem('userProfile', JSON.stringify(userProfile));
   } catch (error) {
+    console.log('Error saving user profile', error)
     // Handle errors (e.g., storage quota exceeded)
   }
 };

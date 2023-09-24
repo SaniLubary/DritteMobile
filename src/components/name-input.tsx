@@ -1,29 +1,36 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, TextInput } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
-import { locallyRetrieveUserProfile } from '../services/local-user-profile-service';
-import { UserProfile } from '../utils/interfaces';
 import { ProfileCreationContext } from '../context/profile-creation-context';
 
-const NameInput = ({ title, setUserProfile }: {
-  title: string, setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | undefined>>
+const NameInput = ({ title }: {
+  title: string
 }) => {
   const { user } = useAuth0();
   const [text, setText] = useState(user ? user.givenName : '');
-  const { answered, unanswered } = useContext(ProfileCreationContext)
+  const { answered, unanswered, localUser, setLocalUser } = useContext(ProfileCreationContext)
 
   useEffect(() => {
-    (async () => {
-      const userProfile: UserProfile = await locallyRetrieveUserProfile()
-      if (userProfile) {
-        setText(userProfile.name)
-        answered(title)
+    (() => {
+      if (localUser && localUser.name) {
+        console.log("Getting name from local user", localUser)
+        setText(localUser.name)
+      } else if (user?.givenName) {
+        console.log("Getting name from auth0 user", user)
+        setText(user?.givenName)
       }
     })()
   }, [])
 
+  useEffect(() => {
+    setLocalUser((prevLocalUser) => {
+      console.log("Saving local user name with name: ", text, "For local user", prevLocalUser)
+      return (prevLocalUser && { ...prevLocalUser, name: text })
+    })
+    answered(title)
+  }, [text])
+
   const onChangeText = (newText: string) => {
-    setUserProfile((userProfile) => (userProfile && { ...userProfile, name: newText }))
     setText(newText);
 
     if (newText !== '') {

@@ -6,24 +6,24 @@ import { UserProfile } from '../utils/interfaces';
 import { locallyRetrieveUserProfile } from '../services/local-user-profile-service';
 import { ProfileCreationContext } from '../context/profile-creation-context';
 
-export default ({ title, setUserProfile }) => {
+export default ({ title }) => {
   const { t } = useTranslation();
-  const { answered } = useContext(ProfileCreationContext)
+  const { answered, setLocalUser } = useContext(ProfileCreationContext)
 
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
     (async () => {
-      const userProfile: UserProfile = await locallyRetrieveUserProfile()
-      if (userProfile) {
-        setDate(new Date(userProfile.birthDate))
+      const localUser: UserProfile = await locallyRetrieveUserProfile()
+      if (localUser && localUser.birthDate) {
+        setDate(new Date(localUser.birthDate))
       }
     })()
   }, [])
 
   useEffect(() => {
-    setUserProfile((prevUser) => ({ ...prevUser, birthDate: date }))
+    setLocalUser((prevUser) => ({ ...prevUser, birthDate: date }))
     answered(title)
   }, [date])
 

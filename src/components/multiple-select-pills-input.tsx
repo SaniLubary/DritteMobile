@@ -25,11 +25,11 @@ const Pill = ({ label, onPress, selected }) => {
   );
 };
 
-const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pillsData, userProfile, setUserProfile }: {
-  title: string, pickOne?: boolean, propertyUpdated: keyof UserProfile, pillsData: string[], userProfile: UserProfile | undefined, setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | undefined>>
+const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pillsData }: {
+  title: string, pickOne?: boolean, propertyUpdated: keyof UserProfile, pillsData: string[]
 }) => {
-  const [selected, setSelected] = useState<string[]>(userProfile ? userProfile[propertyUpdated] as Array<string> : []);
-  const { answered, unanswered } = useContext(ProfileCreationContext)
+  const { answered, unanswered, localUser, setLocalUser } = useContext(ProfileCreationContext);
+  const [selected, setSelected] = useState<string[]>(localUser && localUser[propertyUpdated] ? localUser[propertyUpdated] as Array<string> : []);
 
   const handlePillPress = label =>
     setSelected(prevSelected => {
@@ -51,7 +51,9 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
     });
 
   useEffect(() => {
-    setUserProfile(userProfile => (userProfile && { ...userProfile, [propertyUpdated]: selected }))
+    setLocalUser(localUser => {
+      return (localUser && { ...localUser, [propertyUpdated]: selected })
+    })
 
     if (selected.length > 0) {
       answered(title)
@@ -71,7 +73,7 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
           {rowPills.map((label, index) => (
             <Pill
               onPress={() => handlePillPress(label)}
-              selected={selected.find(select => select === label)}
+              selected={selected && selected.find(select => select === label)}
               key={index}
               label={label}
             />

@@ -1,4 +1,6 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
+import { UserProfile } from '../utils/interfaces';
+import { locallyRetrieveUserProfile, locallyStoreUserProfile } from '../services/local-user-profile-service';
 
 const initialQuestionsStatusState = [
   { title: 'nameQuestion', answered: false },
@@ -15,18 +17,31 @@ interface IProfileCreationContext {
   }[],
   answered: (title: string) => void,
   unanswered: (title: string) => void,
-  isAnswered: (title: string) => boolean
+  isAnswered: (title: string) => boolean,
+  localUser: UserProfile | undefined,
+  setLocalUser: React.Dispatch<React.SetStateAction<UserProfile | undefined>>,
 }
 
 const ProfileCreationContext = createContext<IProfileCreationContext>({
   questions: [{ title: '', answered: true }],
   answered: () => { },
   unanswered: () => { },
-  isAnswered: () => true
+  isAnswered: () => true,
+  localUser: {},
+  setLocalUser: () => { }
 });
 
 const ProfileCreationProvider = ({ children }) => {
   const [questions, setQuestions] = useState(initialQuestionsStatusState);
+  const [localUser, setLocalUser] = useState<UserProfile>();
+
+  useEffect(() => {
+    localUser && locallyStoreUserProfile(localUser)
+  }, [localUser]);
+
+  useEffect(() => {
+    (async function () { setLocalUser(await locallyRetrieveUserProfile()) })()
+  }, [])
 
   const answered = (title) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);
@@ -52,7 +67,9 @@ const ProfileCreationProvider = ({ children }) => {
     questions,
     answered,
     unanswered,
-    isAnswered
+    isAnswered,
+    localUser,
+    setLocalUser
   };
 
   return (
