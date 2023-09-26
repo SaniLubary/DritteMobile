@@ -25,7 +25,7 @@ const NameInput = ({ title }: {
   useEffect(() => {
     setLocalUser((prevLocalUser) => {
       console.log("Saving local user name with name: ", text, "For local user", prevLocalUser)
-      return (prevLocalUser && { ...prevLocalUser, name: text })
+      return prevLocalUser ? { ...prevLocalUser, name: text } : { name: text }
     })
     answered(title)
   }, [text])

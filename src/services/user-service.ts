@@ -18,6 +18,9 @@ const getUser = async (email: string): Promise<UserProfile> => {
     .catch(err => console.log("Error retrieving user", err))
 
   console.log('Found: ', user)
+  if (!user) {
+    return {}
+  }
   return user
 }
 

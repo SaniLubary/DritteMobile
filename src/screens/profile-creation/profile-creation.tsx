@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../../App';
@@ -7,7 +7,8 @@ import { UserProfile } from '../../utils/interfaces';
 import { getUser } from '../../services/user-service';
 import { ProfileCreationProvider } from '../../context/profile-creation-context';
 import ProfileCreationFlowButtons from '../../components/profile-creation-flow-buttons';
-import getQuestions, { Question } from './getQuestions';
+import getQuestions, { Question } from './get-questions';
+import Text from '../../components/atoms/text';
 
 export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { t } = useTranslation();
@@ -17,7 +18,13 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
 
   useEffect(() => {
     (async function () {
-      user?.email && setDbUser(await getUser(user?.email))
+      const dbUserRetrieved = user?.email && await getUser(user?.email)
+      if (dbUserRetrieved) {
+        setDbUser(dbUserRetrieved)
+        return
+      }
+      console.log("Navigating to Home page from ProfileCreation...")
+      navigate('Home')
     })()
   }, []);
 
@@ -26,14 +33,19 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   }, []);
 
   const questions = useMemo<Question[]>(() => {
+    if (!dbUser) {
+      return []
+    }
     console.log("Trying to set up questions...")
     console.log("Using dbUser: ", dbUser)
-    return dbUser ? getQuestions(dbUser, t) : []
+    const questions = dbUser ? getQuestions(dbUser, t) : []
+    return questions
   }, [dbUser]);
+
   const currentQuestion = questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null
 
-  if (dbUser && questions.length === 0) {
-    navigate('Home')
+  if (!currentQuestion) {
+    return <View><Text variant='title'>Loading</Text></View>
   }
 
   return (
@@ -42,7 +54,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
         <View style={styles.container}>
           {currentQuestion.image}
 
-          <Text style={styles.title}>
+          <Text variant='title'>
             {currentQuestion.question}
           </Text>
 

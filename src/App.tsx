@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Auth0Provider } from 'react-native-auth0';
 import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -28,7 +28,7 @@ const App = () => {
       <SafeAreaView style={styles.container}>
         <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
           <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator screenOptions={{ header: () => <View></View> }}>
               <Stack.Screen name="LogIn" component={LogIn} />
               <Stack.Screen name="ProfileCreation" component={ProfileCreation} />
               <Stack.Screen name="Home" component={Home} />

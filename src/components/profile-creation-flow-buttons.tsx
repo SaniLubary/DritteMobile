@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next';
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
 import { ProfileCreationContext } from '../context/profile-creation-context';
 import { saveUserProfile } from '../services/user-service';
 import { useAuth0 } from 'react-native-auth0';
+import Button from './atoms/button';
 
 const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, setCurrentQuestionIndex, navigate }) => {
   const { t } = useTranslation();
@@ -14,9 +15,17 @@ const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, se
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      if (localUser?.name && localUser.birthDate && localUser.lenguagePreference && localUser.musicGenres) {
+      if (localUser?.name
+        && localUser?.birthDate
+        && localUser?.lenguagePreference?.length
+        && localUser?.lenguagePreference?.length > 0
+        && localUser?.musicGenres
+        && localUser?.musicGenres.length > 0
+      ) {
         user?.email && await saveUserProfile({ ...localUser, email: user.email })
         navigate('Home');
+      } else {
+        console.log("Error saving user profile with data: ", localUser)
       }
     }
   };

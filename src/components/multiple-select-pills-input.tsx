@@ -62,6 +62,10 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
     }
   }, [selected])
 
+  useEffect(() => {
+    localUser && typeof localUser[propertyUpdated] !== 'string' && setSelected(localUser[propertyUpdated] as string[])
+  }, [propertyUpdated])
+
   const rows: ReactElement[] = useMemo(() => {
     const screenWidth = Dimensions.get('window').width;
     const maxPillsPerRow = Math.floor(screenWidth / pillWith);

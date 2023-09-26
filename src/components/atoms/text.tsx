@@ -19,6 +19,10 @@ const variantStyles = StyleSheet.create({
   },
   normal: {
     fontSize: 16
+  },
+  normalBold: {
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 })
 
