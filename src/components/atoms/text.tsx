@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react'
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TextStyle } from 'react-native';
 
-const TextCustom = ({ children, variant = 'normal' }: { children: ReactElement | string, variant: keyof typeof variantStyles }) => {
+const TextCustom = ({ children, variant = 'normal', style }: { style?: TextStyle, children: ReactElement | string, variant: keyof typeof variantStyles }) => {
   return (
-    <Text style={[styles.text, variantStyles[variant]]}>{children}</Text>
+    <Text style={[styles.text, variantStyles[variant], style]}>{children}</Text>
   )
 }
 

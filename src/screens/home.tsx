@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView } from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { locallyClearToken } from '../services/local-auth-service';
 import Text from '../components/atoms/text';
@@ -16,7 +16,11 @@ const Home = ({ navigation: { navigate } }: { navigation: Navigation }) => {
 
   useEffect(() => {
     (async function () {
-      user?.email && setDbUser(await getUser(user?.email))
+      if (user?.email) {
+        setDbUser(await getUser(user?.email))
+      } else {
+        navigate('LogIn')
+      }
     })()
   }, []);
 
@@ -24,6 +28,7 @@ const Home = ({ navigation: { navigate } }: { navigation: Navigation }) => {
     (async function () {
       const user = await locallyRetrieveUserProfile()
       if (!user) {
+        console.log("Local user not found, storing dbUser locally...")
         await locallyStoreUserProfile(dbUser)
         setLocalUser(dbUser)
       }
@@ -49,18 +54,10 @@ const Home = ({ navigation: { navigate } }: { navigation: Navigation }) => {
 
   return (
     <ScrollView>
-      <Text variant="title">User Auth0</Text>
-      <Text variant="normal">{JSON.stringify(user)}</Text>
-
-      <Text variant="title">User Local</Text>
-      <Text variant="normal">{JSON.stringify(localUser)}</Text>
-
-      <Text variant="title">User Base de datos</Text>
-      <Text variant="normal">{JSON.stringify(dbUser)}</Text>
-
-      {user?.picture && <Image source={{ uri: user?.picture }} style={{ width: 100, height: 100 }} />}
-      <Button title='Cerrar sesion' onPress={onLogout} />
-      <Button title='Reiniciar creacion de perfil' onPress={() => navigate('ProfileCreation')} />
+      <View style={{ flex: 3 }}>
+        <Button title='Cerrar sesion' onPress={onLogout} />
+        <Button title='Reiniciar creacion de perfil' onPress={() => navigate('ProfileCreation')} />
+      </View>
     </ScrollView>
   );
 };

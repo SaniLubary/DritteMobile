@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { UserProfile } from "../utils/interfaces"
@@ -12,6 +12,7 @@ import Button from '../components/atoms/button';
 
 export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { authorize, isLoading, user } = useAuth0();
+  const [savingUser, setSavingUser] = useState<boolean>(false);
 
   const logIn = async () => {
     try {
@@ -37,35 +38,42 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
   useEffect(() => {
     (async function () {
       if (user && user.email) {
+        setSavingUser(true);
         const dbUser: UserProfile = await getUser(user.email)
         const localUser: UserProfile = await locallyRetrieveUserProfile()
 
         if (dbUser && localUser) {
           if (isIncompleteProfileCreation(dbUser)) {
+            setSavingUser(false);
             console.log("Navigating to Profile Creation...")
             navigate('ProfileCreation')
             return
           }
-          await locallyStoreUserProfile(dbUser)
-          console.log("Navigating to Home...")
-          navigate('Home')
+          locallyStoreUserProfile(dbUser).then(() => {
+            console.log("User locally stored with", dbUser)
+            console.log("Navigating to Home...")
+            setSavingUser(false);
+            navigate('Home')
+          })
           return
         }
 
-        await createBaseUser({
+        createBaseUser({
           profileUri: user.picture,
           email: user.email,
-        })
-        console.log("Navigating to Profile Creation...")
-        navigate('ProfileCreation');
+        }).then(() => {
+          setSavingUser(false);
+          console.log("Navigating to Profile Creation...")
+          navigate('ProfileCreation');
+        }).catch(err => console.error(err));
       }
     })()
-  }, [user, navigate]);
+  }, [user]);
 
-  if (isLoading) {
+  if (isLoading || savingUser) {
     return (
       <View style={styles.container}>
-        <Text variant='normal'>Loading</Text>
+        <Text variant='title'>Loading</Text>
       </View>
     );
   }

@@ -24,7 +24,7 @@ export default function getQuestions(
 
   const questions: Question[] = []
 
-  console.log("User info to set up questions...", user)
+  console.log("Setting up questions...", user)
 
   if (!user.name) {
     questions.push({

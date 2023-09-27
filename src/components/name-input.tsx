@@ -7,27 +7,27 @@ const NameInput = ({ title }: {
   title: string
 }) => {
   const { user } = useAuth0();
-  const [text, setText] = useState(user ? user.givenName : '');
+  const [text, setText] = useState('');
   const { answered, unanswered, localUser, setLocalUser } = useContext(ProfileCreationContext)
 
   useEffect(() => {
-    (() => {
-      if (localUser && localUser.name) {
-        console.log("Getting name from local user", localUser)
-        setText(localUser.name)
-      } else if (user?.givenName) {
-        console.log("Getting name from auth0 user", user)
-        setText(user?.givenName)
-      }
-    })()
+    if (localUser && localUser.name) {
+      console.log("Getting name from local user", localUser)
+      setText(localUser.name)
+    } else if (user?.givenName) {
+      console.log("Getting name from auth0 user", user)
+      setText(user?.givenName)
+    }
   }, [])
 
   useEffect(() => {
-    setLocalUser((prevLocalUser) => {
-      console.log("Saving local user name with name: ", text, "For local user", prevLocalUser)
-      return prevLocalUser ? { ...prevLocalUser, name: text } : { name: text }
-    })
-    answered(title)
+    if (text !== '') {
+      setLocalUser((prevLocalUser) => {
+        console.log("Saving local user name with name: ", text, "For local user", prevLocalUser)
+        return prevLocalUser ? { ...prevLocalUser, name: text } : { name: text }
+      })
+      answered(title)
+    }
   }, [text])
 
   const onChangeText = (newText: string) => {

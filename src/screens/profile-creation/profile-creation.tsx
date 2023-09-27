@@ -15,6 +15,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   const { user } = useAuth0();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [dbUser, setDbUser] = useState<UserProfile>();
+  const [loadingQuestions, setLoadingQuestions] = useState<boolean>(true);
 
   useEffect(() => {
     (async function () {
@@ -39,13 +40,18 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
     console.log("Trying to set up questions...")
     console.log("Using dbUser: ", dbUser)
     const questions = dbUser ? getQuestions(dbUser, t) : []
+    setLoadingQuestions(false)
     return questions
   }, [dbUser]);
 
   const currentQuestion = questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null
 
-  if (!currentQuestion) {
+  if (loadingQuestions) {
     return <View><Text variant='title'>Loading</Text></View>
+  }
+
+  if (!loadingQuestions && !currentQuestion) {
+    navigate('Home');
   }
 
   return (

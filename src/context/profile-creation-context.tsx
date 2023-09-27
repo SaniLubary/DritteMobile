@@ -33,15 +33,12 @@ const ProfileCreationContext = createContext<IProfileCreationContext>({
 
 const ProfileCreationProvider = ({ children }) => {
   const [questions, setQuestions] = useState(initialQuestionsStatusState);
-  const [localUser, setLocalUser] = useState<UserProfile>();
+  const [localUser, setLocalUser] = useState<UserProfile | undefined>({});
 
   useEffect(() => {
     localUser && locallyStoreUserProfile(localUser)
-  }, [localUser]);
-
-  useEffect(() => {
-    (async function () { setLocalUser(await locallyRetrieveUserProfile()) })()
-  }, [])
+    console.log("local user was", localUser)
+  }, [localUser])
 
   const answered = (title) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);

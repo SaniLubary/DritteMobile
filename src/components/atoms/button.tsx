@@ -13,9 +13,9 @@ const Button = ({ title, onPress, disabled = false }: { title: string, onPress: 
 const styles = StyleSheet.create({
   button: {
     backgroundColor: 'pink',
-    paddingVertical: 20,
-    paddingHorizontal: 40,
-    marginVertical: 50,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: 'center',
     borderRadius: 10,
     ...Platform.select({
       ios: {

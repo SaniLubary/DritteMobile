@@ -31,13 +31,13 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
   const { answered, unanswered, localUser, setLocalUser } = useContext(ProfileCreationContext);
   const [selected, setSelected] = useState<string[]>(localUser && localUser[propertyUpdated] ? localUser[propertyUpdated] as Array<string> : []);
 
-  const handlePillPress = label =>
+  const handlePillPress = (label: string) =>
     setSelected(prevSelected => {
       if (pickOne) {
         return [label]
       }
 
-      const labelExistsIn = prevSelected.findIndex(select => select === label);
+      const labelExistsIn = prevSelected ? prevSelected.findIndex(select => select === label) : -1;
       if (labelExistsIn !== -1) {
         if (labelExistsIn === 0 && prevSelected.length === 1) {
           return [];
@@ -46,16 +46,19 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
         newSelected.splice(labelExistsIn, 1);
         return newSelected;
       } else {
-        return [...prevSelected, label];
+        if (prevSelected) {
+          return [...prevSelected, label];
+        } else return []
       }
     });
 
   useEffect(() => {
     setLocalUser(localUser => {
+      console.log('Setting local user in multiple select input for local user', localUser, propertyUpdated, selected)
       return (localUser && { ...localUser, [propertyUpdated]: selected })
     })
 
-    if (selected.length > 0) {
+    if (selected && selected.length > 0) {
       answered(title)
     } else {
       unanswered(title)
@@ -63,7 +66,13 @@ const MultipleSelectPillsInput = ({ title, pickOne = false, propertyUpdated, pil
   }, [selected])
 
   useEffect(() => {
-    localUser && typeof localUser[propertyUpdated] !== 'string' && setSelected(localUser[propertyUpdated] as string[])
+    try {
+      if (localUser && localUser[propertyUpdated]) {
+        setSelected(localUser[propertyUpdated] as string[])
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }, [propertyUpdated])
 
   const rows: ReactElement[] = useMemo(() => {

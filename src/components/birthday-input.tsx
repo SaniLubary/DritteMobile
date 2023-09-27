@@ -8,10 +8,14 @@ import { ProfileCreationContext } from '../context/profile-creation-context';
 
 export default ({ title }) => {
   const { t } = useTranslation();
-  const { answered, setLocalUser } = useContext(ProfileCreationContext)
+  const { answered, setLocalUser, localUser } = useContext(ProfileCreationContext)
 
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    console.log('Local user in birthday input is: ', localUser)
+  }, [localUser])
 
   useEffect(() => {
     (async () => {
@@ -23,7 +27,10 @@ export default ({ title }) => {
   }, [])
 
   useEffect(() => {
-    setLocalUser((prevUser) => ({ ...prevUser, birthDate: date }))
+    setLocalUser((prevUser) => {
+      console.log('Prev user in birthday input is:', prevUser)
+      return { ...prevUser, birthDate: date }
+    })
     answered(title)
   }, [date])
 
