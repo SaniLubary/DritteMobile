@@ -8,7 +8,7 @@ import { getUser, createBaseUser } from '../services/user-service';
 import { locallyRetrieveUserProfile, locallyStoreUserProfile } from '../services/local-user-profile-service';
 import Text from '../components/atoms/text';
 import Button from '../components/atoms/button';
-
+import isIncompleteProfileCreation from '../utils/isIncompleteProfileCreation'
 
 export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { authorize, isLoading, user } = useAuth0();
@@ -22,18 +22,6 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
       console.log(e);
     }
   };
-
-  const isIncompleteProfileCreation = (dbUser: UserProfile) => {
-    try {
-      return !dbUser.birthDate
-        || !dbUser.lenguagePreference
-        || !dbUser.name
-        || dbUser?.musicGenres?.length === 0
-    } catch (error) {
-      console.log("Error", error)
-      return false
-    }
-  }
 
   useEffect(() => {
     (async function () {
@@ -52,8 +40,8 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
           locallyStoreUserProfile(dbUser).then(() => {
             console.log("User locally stored with", dbUser)
             console.log("Navigating to Home...")
+            navigate('MainScreen')
             setSavingUser(false);
-            navigate('Home')
           })
           return
         }

@@ -5,9 +5,15 @@ const saveUserProfile = async (userProfile: UserProfile) => {
   const axios = await getAxiosInstance();
   console.log('Saving User:', userProfile)
   userProfile.lenguagePreference = userProfile.lenguagePreference && userProfile.lenguagePreference[0]
-  await axios.put(`/user/${userProfile.email}`, userProfile)
-    .then(response => console.log('User saved: ', response.data))
-    .catch(err => console.log("Error saving user profile in database", err))
+  return await axios.put(`/user/${userProfile.email}`, userProfile)
+    .then(response => {
+      console.log('User saved: ', response.data)
+      return true
+    })
+    .catch(err => {
+      console.log("Error saving user profile in database", err)
+      return false
+    })
 }
 
 const getUser = async (email: string): Promise<UserProfile> => {

@@ -17,5 +17,8 @@
       "regge": "regge",
       "rap": "rap"
     }
+  },
+  "createEntry": {
+    "backButton": "Cancelar"
   }
 }

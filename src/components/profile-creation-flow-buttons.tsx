@@ -22,10 +22,12 @@ const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, se
         && localUser?.musicGenres
         && localUser?.musicGenres.length > 0
       ) {
-        user?.email && await saveUserProfile({ ...localUser, email: user.email })
-        navigate('Home');
+        user?.email && saveUserProfile({ ...localUser, email: user.email }).then((result) => {
+          console.log('result is', result)
+          result ? navigate('MainScreen') : navigate('LogIn');
+        })
       } else {
-        console.log("Error saving user profile with data: ", localUser)
+        console.log("Validation Error saving user profile with data: ", localUser)
       }
     }
   };

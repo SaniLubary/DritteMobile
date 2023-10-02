@@ -25,7 +25,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
         return
       }
       console.log("Navigating to Home page from ProfileCreation...")
-      navigate('Home')
+      navigate('MainScreen')
     })()
   }, []);
 
@@ -51,7 +51,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   }
 
   if (!loadingQuestions && !currentQuestion) {
-    navigate('Home');
+    navigate('MainScreen');
   }
 
   return (

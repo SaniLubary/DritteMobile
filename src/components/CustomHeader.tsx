@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import TextCustom from './atoms/text';
 
@@ -8,8 +8,10 @@ const CustomHeader = () => {
 
   return (
     <View style={styles.headerContainer}>
-      <TextCustom variant='title'>Dritte</TextCustom>
-      {user?.picture && <Image source={{ uri: user?.picture }} style={{ width: 50, height: 50, borderRadius: 50, marginRight: 15 }} />}
+      <TextCustom variant='normalBold'>Dritte</TextCustom>
+      <TouchableOpacity onPress={() => { }}>
+        {user?.picture && <Image source={{ uri: user?.picture }} style={{ width: 50, height: 50, borderRadius: 50 }} />}
+      </TouchableOpacity>
     </View>
   );
 };
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: Dimensions.get('window').width - 15
+    width: '100%',
   }
 });
 
