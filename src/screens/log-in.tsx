@@ -30,7 +30,8 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
         const dbUser: UserProfile = await getUser(user.email)
         const localUser: UserProfile = await locallyRetrieveUserProfile()
 
-        if (dbUser && localUser) {
+        console.log("IN DA IF", dbUser, localUser)
+        if (dbUser.email) {
           if (isIncompleteProfileCreation(dbUser)) {
             setSavingUser(false);
             console.log("Navigating to Profile Creation...")

@@ -1,17 +1,20 @@
 import { UserProfile } from "@app/utils/interfaces"
 import getAxiosInstance from "./base-config";
+import { locallyStoreUserProfile } from "./local-user-profile-service";
 
 const saveUserProfile = async (userProfile: UserProfile) => {
   const axios = await getAxiosInstance();
-  console.log('Saving User:', userProfile)
-  userProfile.lenguagePreference = userProfile.lenguagePreference && userProfile.lenguagePreference[0]
+  if (typeof userProfile.lenguagePreference !== 'string') {
+    userProfile.lenguagePreference = userProfile.lenguagePreference && userProfile.lenguagePreference[0]
+  }
   return await axios.put(`/user/${userProfile.email}`, userProfile)
-    .then(response => {
+    .then((response) => {
       console.log('User saved: ', response.data)
+      locallyStoreUserProfile(response.data)
       return true
     })
     .catch(err => {
-      console.log("Error saving user profile in database", err)
+      console.error("Error saving user profile in database", err)
       return false
     })
 }
