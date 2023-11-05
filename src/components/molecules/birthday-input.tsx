@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Button, Text } from 'react-native'
 import DatePicker from 'react-native-date-picker'
-import { UserProfile } from '../utils/interfaces';
-import { locallyRetrieveUserProfile } from '../services/local-user-profile-service';
-import { ProfileCreationContext } from '../context/profile-creation-context';
+import { UserProfile } from '../../utils/interfaces';
+import { locallyRetrieveUserProfile } from '../../services/local-user-profile-service';
+import { ProfileCreationContext } from '../../context/profile-creation-context';
 
 export default ({ title }) => {
   const { t } = useTranslation();

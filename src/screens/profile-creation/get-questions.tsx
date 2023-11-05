@@ -2,9 +2,9 @@ import React from 'react';
 import BrittaSad from '../../assets/britta-1-full-bodie'
 import BrittaNice from '../../assets/britta-2-full-bodie'
 
-import NameInput from '../../components/name-input';
-import MultipleSelectPillsInput from '../../components/multiple-select-pills-input';
-import BirthdayInput from '../../components/birthday-input';
+import NameInput from '../../components/molecules/name-input';
+import MultipleSelectPillsInput from '../../components/molecules/multiple-select-pills-input';
+import BirthdayInput from '../../components/molecules/birthday-input';
 import { UserProfile } from '../../utils/interfaces';
 import { TFunction } from 'i18next';
 

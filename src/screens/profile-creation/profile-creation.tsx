@@ -6,9 +6,10 @@ import { Navigation } from '../../App';
 import { UserProfile } from '../../utils/interfaces';
 import { getUser } from '../../services/user-service';
 import { ProfileCreationProvider } from '../../context/profile-creation-context';
-import ProfileCreationFlowButtons from '../../components/profile-creation-flow-buttons';
+import ProfileCreationFlowButtons from '../../components/molecules/profile-creation-flow-buttons';
 import getQuestions, { Question } from './get-questions';
-import Text from '../../components/atoms/text';
+import {TextCustom as Text} from '../../components/atoms/text';
+import Spinner from '../../components/atoms/spinner';
 
 export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   const currentQuestion = questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null
 
   if (loadingQuestions) {
-    return <View><Text variant='title'>Loading</Text></View>
+    return <View><Spinner /></View>
   }
 
   if (!loadingQuestions && !currentQuestion) {

@@ -1,6 +1,7 @@
 import { UserProfile } from "@app/utils/interfaces"
 import getAxiosInstance from "./base-config";
 import { locallyStoreUserProfile } from "./local-user-profile-service";
+import { AxiosError } from "axios";
 
 const saveUserProfile = async (userProfile: UserProfile) => {
   const axios = await getAxiosInstance();
@@ -24,12 +25,20 @@ const getUser = async (email: string): Promise<UserProfile> => {
   console.log(`Trying to get user with email ${email}...`)
   const user = await axios.get(`/user/${email}`)
     .then(response => response.data)
-    .catch(err => console.log("Error retrieving user", err))
+    .catch((err: AxiosError) => {
+      throw err
+    })
 
   console.log('Found: ', user)
   if (!user) {
+    console.log("User not found or token expired", user)
     return {}
   }
+
+  if (user?.error) {
+    throw Error(user.error)
+  }
+  
   return user
 }
 

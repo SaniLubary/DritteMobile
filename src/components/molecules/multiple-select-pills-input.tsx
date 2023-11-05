@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { UserProfile } from '../utils/interfaces';
-import { ProfileCreationContext } from '../context/profile-creation-context';
+import { UserProfile } from '../../utils/interfaces';
+import { ProfileCreationContext } from '../../context/profile-creation-context';
 
 const pillWith = 80;
 

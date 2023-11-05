@@ -1,11 +1,11 @@
 import React from 'react'
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
-import Text from './text'
+import { TextCustom} from './text'
 
-const Button = ({ title, onPress, disabled = false, variant = 'primary' }: { title: string, onPress: () => void, disabled?: boolean, variant?: keyof typeof variantStyles }) => {
+export const Button = ({ title, onPress, disabled = false, variant = 'primary', textVariant = 'title' }: { title: string, onPress: () => void, disabled?: boolean, variant?: keyof typeof variantStyles, textVariant?: "title" | "normal" | "normalBold" }) => {
   return (
     <TouchableOpacity style={[styles.button, variantStyles[variant], disabled && { backgroundColor: '#435E4E' }]} onPress={disabled ? () => { } : onPress}>
-      <Text variant='title'>{title}</Text>
+      <TextCustom variant={textVariant} style={{ color: 'white' }}>{title}</TextCustom>
     </TouchableOpacity>
   )
 }
@@ -40,7 +40,11 @@ const variantStyles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: '#435E4E'
+  },
+  circle: {
+    backgroundColor: '#3FBF8A',
+    borderRadius:100,
+    height: 120,
+    justifyContent: 'center'
   }
 })
-
-export default Button

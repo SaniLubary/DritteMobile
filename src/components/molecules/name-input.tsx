@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, TextInput } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
-import { ProfileCreationContext } from '../context/profile-creation-context';
+import { ProfileCreationContext } from '../../context/profile-creation-context';
 
 const NameInput = ({ title }: {
   title: string

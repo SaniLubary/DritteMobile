@@ -20,5 +20,9 @@
   },
   "createEntry": {
     "backButton": "Cancelar"
+  },
+  "logIn": {
+    "text": "Mejor lugar para guardar tus emociones",
+    "login": "Start"
   }
 }

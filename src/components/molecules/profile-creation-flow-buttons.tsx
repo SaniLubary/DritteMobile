@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { ProfileCreationContext } from '../context/profile-creation-context';
-import { saveUserProfile } from '../services/user-service';
+import { ProfileCreationContext } from '../../context/profile-creation-context';
+import { saveUserProfile } from '../../services/user-service';
 import { useAuth0 } from 'react-native-auth0';
-import Button from './atoms/button';
+import {Button} from '../atoms/button';
 
 const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, setCurrentQuestionIndex, navigate }) => {
   const { t } = useTranslation();

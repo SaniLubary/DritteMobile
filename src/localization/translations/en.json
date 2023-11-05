@@ -20,5 +20,9 @@
   },
   "createEntry": {
     "backButton": "Cancel"
+  },
+  "logIn": {
+    "text": "Best place to save your feelings.",
+    "login": "Start"
   }
 }
