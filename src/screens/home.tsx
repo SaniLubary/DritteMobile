@@ -7,8 +7,9 @@ import { UserProfile } from '../utils/interfaces';
 import { Button } from '../components/atoms/button';
 import { useNavigation } from '@react-navigation/native';
 import { getJournals } from '../services/journal-service';
-import { emotions } from './create-entry';
+import { Emotion, emotions } from './create-entry';
 import Card from '../components/molecules/card';
+import EmojisChart from '../components/molecules/emojis-chart';
 import { UserContext } from '../context/user-context';
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
     if (dbUser?.email) {
       getJournals(dbUser.email).then((journals) => {
         console.log('Journals found: ', journals)
+        journals.reverse()
         setJournals(journals)
       })
     }
@@ -64,6 +66,9 @@ const Home = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      <View style={{ alignItems: 'center' }}>
+        <EmojisChart journals={journals} />
+      </View>
       <Text style={styles.entryHeading}>Tu diario</Text>
       <ScrollView refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={styles.entriesContainer}>
@@ -80,7 +85,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   entriesContainer: {
     paddingHorizontal: 20,
-    height: '60%'
+    height: '30%'
   },
   entryHeading: {
     fontSize: 24,
@@ -88,10 +93,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: 'black',
     marginLeft: 20
-  },
-  date: {
-    fontSize: 14,
-    color: 'gray',
   },
 });
 
