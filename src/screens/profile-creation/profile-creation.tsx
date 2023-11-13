@@ -57,7 +57,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
 
   return (
     <ProfileCreationProvider>
-      {currentQuestion &&
+      {currentQuestion ?
         <View style={styles.container}>
           {currentQuestion.image}
 
@@ -75,7 +75,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
             questions={questions}
           />
         </View>
-      }
+      : <></>}
     </ProfileCreationProvider>
   );
 };

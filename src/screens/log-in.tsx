@@ -3,19 +3,26 @@ import { View, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../App';
 import { locallyStoreToken } from '../services/local-auth-service';
-import { getUser, createBaseUser } from '../services/user-service';
+import { getUser, createBaseUser, saveUserProfile } from '../services/user-service';
 import { locallyStoreUserProfile } from '../services/local-user-profile-service';
-import {TextCustom as Text} from '../components/atoms/text';
-import {Button} from '../components/atoms/button';
+import { TextCustom as Text } from '../components/atoms/text';
+import { Button } from '../components/atoms/button';
 import isIncompleteProfileCreation from '../utils/isIncompleteProfileCreation'
 import { useTranslation } from 'react-i18next';
 import Spinner from '../components/atoms/spinner';
+import { getFcmToken, notificationListener } from '../utils/push-notification-helper';
+import { UserProfile } from '../utils/interfaces';
 
 export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) => {
-  const { authorize, isLoading, user, clearSession } = useAuth0();
+  const { authorize, isLoading, user } = useAuth0();
   const [savingUser, setSavingUser] = useState<boolean>(false);
   const { t } = useTranslation()
 
+  
+  useEffect(() => {
+    notificationListener(navigate);
+  }, [])
+  
   const logIn = async () => {
     try {
       const response = await authorize();
@@ -29,8 +36,12 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
     (async function () {
       if (user && user.email) {
         setSavingUser(true);
+        
         console.log("User from auth0: " + user.email);
-        getUser(user.email).then(dbUser => {
+
+        const deviceToken = await getFcmToken()
+        
+        getUser(user.email).then((dbUser: UserProfile) => {
           if (dbUser.email) {
             if (isIncompleteProfileCreation(dbUser)) {
               setSavingUser(false);
@@ -38,17 +49,26 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
               navigate('ProfileCreation')
               return
             }
+            
+            // If current device token is not in database, add it
+            if (dbUser.deviceTokens && !dbUser.deviceTokens.find((token: string) => token === deviceToken)) {
+              saveUserProfile({...dbUser, deviceTokens: [...dbUser.deviceTokens, deviceToken]})
+            }
+            
             locallyStoreUserProfile(dbUser).then(() => {
               console.log("User locally stored with", dbUser)
               console.log("Navigating to Home...")
               navigate('MainScreen')
               setSavingUser(false);
             })
+            
             return
           }
+
           createBaseUser({
             profileUri: user.picture,
             email: user.email,
+            deviceTokens: [deviceToken]
           }).then(() => {
             setSavingUser(false);
             console.log("Navigating to Profile Creation...")

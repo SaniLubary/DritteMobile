@@ -11,7 +11,7 @@ import { ProfileCreationContext } from '../../context/profile-creation-context';
 
 const pillWith = 80;
 
-const Pill = ({ label, onPress, selected }) => {
+const Pill = ({ label, onPress, selected }: {label: string, onPress: () => void, selected: string | undefined}) => {
   return (
     <TouchableOpacity
       onPress={onPress}

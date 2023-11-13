@@ -4,19 +4,20 @@ import { useNavigation } from '@react-navigation/native'
 import { Navigation } from '../../App'
 import { JournalEntry } from '../../utils/interfaces'
 import { Emotion } from '../../screens/create-entry'
+import { TextCustom } from '../atoms/text'
 
 const Card = ({ emotions, journal, index }: { emotions: Emotion[], journal: JournalEntry, index: number }) => {
     const { navigate } = useNavigation<Navigation>()
 
     return (
-        <TouchableOpacity onPress={() => navigate('ViewEntry', { entryId: journal._id })} key={index} style={styles.card}>
-            {emotions.filter(emotion => emotion.value === journal.emotion)[0].emoji('normal')}
-            <View style={{ width: '50%' }}>
-                <Text style={styles.title}>{journal.title}</Text>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.description}>{journal.description}</Text>
-            </View>
-            <View style={{ width: 200 }}>
-                <Text>{journal?.createdAt && new Date(journal?.createdAt).getDate() + '/' + new Date(journal?.createdAt).getMonth()}</Text>
+        <TouchableOpacity onPress={() => journal._id && navigate('ViewEntry', { entryId: `${journal._id}` })} key={index} style={styles.card}>
+            {emotions.filter(emotion => emotion.value === journal.emotion)?.[0]?.emoji('normal')}
+            <View style={{ flex: 1, marginLeft: 8 }}>
+                <TextCustom variant='normalBold'>{journal.title}</TextCustom>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.description}>{journal.description}</Text>
+                <TextCustom style={{ marginTop: 8 }} variant='normal'>
+                    {journal?.createdAt ? new Date(journal?.createdAt).getDate() + '/' + new Date(journal?.createdAt).getMonth() + "/" + new Date(journal?.createdAt).getFullYear() + " a las " + new Date(journal?.createdAt).getHours() + "hs": ''}
+                </TextCustom>
             </View>
         </TouchableOpacity>
     )

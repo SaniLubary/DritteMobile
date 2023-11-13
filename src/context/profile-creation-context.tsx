@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { ReactNode, createContext, useEffect, useState } from 'react';
 import { UserProfile } from '../utils/interfaces';
-import { locallyRetrieveUserProfile, locallyStoreUserProfile } from '../services/local-user-profile-service';
+import { locallyStoreUserProfile } from '../services/local-user-profile-service';
 
 const initialQuestionsStatusState = [
   { title: 'nameQuestion', answered: false },
@@ -31,7 +31,7 @@ const ProfileCreationContext = createContext<IProfileCreationContext>({
   setLocalUser: () => { }
 });
 
-const ProfileCreationProvider = ({ children }) => {
+const ProfileCreationProvider = ({ children }: {children: ReactNode}) => {
   const [questions, setQuestions] = useState(initialQuestionsStatusState);
   const [localUser, setLocalUser] = useState<UserProfile | undefined>({});
 
@@ -40,7 +40,7 @@ const ProfileCreationProvider = ({ children }) => {
     console.log("local user was", localUser)
   }, [localUser])
 
-  const answered = (title) => {
+  const answered = (title: string) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);
     if (questions[questionToUpdateIndex]) {
       questions[questionToUpdateIndex].answered = true;
@@ -48,7 +48,7 @@ const ProfileCreationProvider = ({ children }) => {
     }
   };
 
-  const unanswered = (title) => {
+  const unanswered = (title: string) => {
     const questionToUpdateIndex = questions.findIndex(question => question.title === title);
     if (questions[questionToUpdateIndex]) {
       questions[questionToUpdateIndex].answered = false;
@@ -56,7 +56,7 @@ const ProfileCreationProvider = ({ children }) => {
     }
   };
 
-  const isAnswered = (title) => {
+  const isAnswered = (title: string) => {
     return questions[questions.findIndex(question => question.title === title)].answered
   }
 

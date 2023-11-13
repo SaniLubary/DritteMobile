@@ -72,7 +72,7 @@ const Home = () => {
         ))}
       </ScrollView>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 20 }}>
-        <Button title='Create Entry' variant='circle' textVariant='normal' onPress={() => navigate('CreateEntry')} />
+        <Button title='Create Entry' variant='primary' textVariant='title' onPress={() => navigate('CreateEntry')} />
       </View>
     </View>
   );

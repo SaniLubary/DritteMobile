@@ -4,9 +4,13 @@ import { View } from 'react-native';
 import { ProfileCreationContext } from '../../context/profile-creation-context';
 import { saveUserProfile } from '../../services/user-service';
 import { useAuth0 } from 'react-native-auth0';
-import {Button} from '../atoms/button';
+import { Button } from '../atoms/button';
+import { Navigation } from '../../App';
+import { Question } from '../../screens/profile-creation/get-questions';
 
-const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, setCurrentQuestionIndex, navigate }) => {
+const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, setCurrentQuestionIndex, navigate }: {
+  questions: Question[], title: string, currentQuestionIndex: number, setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>, navigate: Navigation['navigate']
+}) => {
   const { t } = useTranslation();
   const { isAnswered, localUser } = useContext(ProfileCreationContext);
   const { user } = useAuth0()

@@ -14,18 +14,26 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CreateEntry from './screens/create-entry';
 import ViewEntry from './screens/view-entry';
 import Profile from './screens/profile';
-
+import PositiveEmojiResponse from './screens/positive-emoji-response'
+import NegativeEmojiResponse from './screens/negative-emoji-response'
+import AnswerIntrospectiveQuestion from './screens/answer-introspective-question'
+import { requestUserPermission } from './utils/push-notification-helper';
 
 const AUTH0_DOMAIN = Config.AUTH0_DOMAIN || '';
 const AUTH0_CLIENT_ID = Config.AUTH0_CLIENT_ID || '';
+
+requestUserPermission();
 
 export type RootStackParamList = {
   MainScreen: undefined;
   LogIn: undefined;
   ProfileCreation: undefined;
   CreateEntry: undefined;
-  ViewEntry: { entryId: number };
-  Profile: undefined
+  ViewEntry: { entryId: string };
+  Profile: undefined;
+  PositiveEmojiResponse: undefined;
+  NegativeEmojiResponse: {entryId: number};
+  AnswerIntrospectiveQuestion:  { question: string, entryId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,6 +63,9 @@ const App = () => {
                 <Tab.Screen name="ViewEntry" options={{ headerTitle: 'Recuerdas esta entrada? nya!' }} component={ViewEntry} />
                 <Tab.Screen name="CreateEntry" options={{ headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
                 <Tab.Screen name="Profile" options={{ headerTitle: 'Actualiza tu perfil!' }} component={Profile} />
+                <Tab.Screen name="PositiveEmojiResponse" options={{ headerTitle: 'Nice!' }} component={PositiveEmojiResponse} />
+                <Tab.Screen name="NegativeEmojiResponse" options={{ headerTitle: 'Ohh :(' }} component={NegativeEmojiResponse} />
+                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Ohh :(' }} component={AnswerIntrospectiveQuestion} />
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

@@ -10,12 +10,16 @@ export const TextCustom = ({ children, variant = 'normal', style }: { style?: Te
 const styles = StyleSheet.create({
   text: {
     color: 'black',
+    fontFamily: 'Shanti-Regular',
   }
 })
 
 const variantStyles = StyleSheet.create({
   title: {
-    fontSize: 30
+    fontSize: 32
+  },
+  medium: {
+    fontSize: 24
   },
   normal: {
     fontSize: 16

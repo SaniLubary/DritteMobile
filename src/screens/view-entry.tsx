@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from '../components/atoms/button';
-import { Navigation, RootStackParamList } from '../App';
+import { Navigation } from '../App';
 import { useTranslation } from 'react-i18next';
 import { TextCustom as Text } from '../components/atoms/text';
-import { useAuth0 } from 'react-native-auth0';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useRoute } from '@react-navigation/native';
 import { UserContext } from '../context/user-context';
 import { emotions } from './create-entry';
@@ -19,34 +17,50 @@ const ViewEntry = ({ navigation }: { navigation: Navigation }) => {
   const { t } = useTranslation();
   const route = useRoute()
   const { journals } = useContext(UserContext);
-  const entryId = route?.params?.['entryId']
+  const entryId = ((route?.params) as any)?.entryId as number
   const journal = journals.filter((journal) => journal._id === entryId)[0]
 
-  return (
+  console.log("Entry Id -> ", entryId)
+
+  return journal && (
     <View style={styles.container}>
-      <Text variant='title'>
-        {`Mira tu entrada del ${new Date(journal.createdAt).getDate()}/${new Date(journal.createdAt).getMonth()}/${new Date(journal.createdAt).getFullYear()}`}
-      </Text>
-
       <View>
-        <View style={styles.inputContainer}>
-          <Text style={{ textAlign: 'center' }} variant='normalBold'>Title</Text>
-          <Text style={{ textAlign: 'center' }} variant='normal'>{journal.title}</Text>
-        </View>
+        {journal?.createdAt && <Text variant='medium' style={{ textAlign: 'center' }}>
+          {`Mira tu entrada del ${new Date(journal.createdAt).getDate()}/${new Date(journal.createdAt).getMonth()}/${new Date(journal.createdAt).getFullYear()}`}
+        </Text>}
+        <ImageBackground source={require('../assets/bg.png')} style={styles.titleCard}>
 
-        <View style={styles.inputContainer}>
-          <Text variant='normalBold' style={{ textAlign: 'center' }}>Description</Text>
-          <Text style={{ textAlign: 'center' }} variant='normal'>{journal.description}</Text>
-        </View>
+          {emotions.filter(emotion => emotion.value === journal.emotion)[0].emoji('large')}
+          <View style={{ marginLeft: 8 }}>
+            <Text variant='normal'>Titulo</Text>
+            <Text variant='medium'>{journal.title}</Text>
+            {journal.emotion === 'happy' || journal.emotion === 'loce' ?
+              <Image style={{ width: 210, height: 190, position: 'absolute', top: 50 }} source={require('../assets/blobs/red-blob.png')} />
+              : <Image style={{ width: 210, height: 190, position: 'absolute', top: 50 }} source={require('../assets/blobs/green-blob.png')} />}
+          </View>
+        </ImageBackground>
+        <ScrollView style={{ height: 400 }}>
+          <View style={styles.inputContainer}>
+            <Text variant='normal'>Tu entrada</Text>
+            <Text variant='title'>{journal.description}</Text>
+          </View>
+          <View style={{ marginTop: 24 }}>
+            {journal.question && <View style={styles.inputContainer}>
+              <Text variant='normal'>Tu pregunta</Text>
+              <Text variant='normalBold'>{journal.question}</Text>
+            </View>}
+            {journal.response && <View style={styles.inputContainer}>
+              <Text variant='normal'>Tu respuesta</Text>
+              <Text variant='medium'>{journal.response}</Text>
+            </View>}
+          </View>
+        </ScrollView>
 
-        <View style={styles.inputContainer}>
-          <Text variant='normalBold' style={{ textAlign: 'center' }}>Emotion</Text>
-          {emotions.filter(emotion => emotion.value === journal.emotion)[0].emoji('small')}
-        </View>
       </View>
 
+
       <View>
-        <Button title={t('createEntry:backButton')} onPress={() => navigation.navigate('MainScreen')} />
+        <Button title={t('Volver')} onPress={() => navigation.navigate('MainScreen')} />
       </View>
     </View>
   );
@@ -60,7 +74,16 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginVertical: 14,
-    alignItems: 'center'
+  },
+  titleCard: {
+    padding: 24,
+    borderColor: '#F5649E',
+    borderWidth: 1,
+    borderRadius: 14,
+    marginTop: 24,
+    flexDirection: 'row',
+    backgroundColor: "#ffc1f7964",
+    overflow: 'hidden'
   },
   input: {
     color: 'black',

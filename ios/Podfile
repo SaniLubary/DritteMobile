@@ -45,6 +45,8 @@ target 'DritteMobile' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  use_frameworks! :linkage => :static
+
   target 'DritteMobileTests' do
     inherit! :complete
     # Pods for testing
