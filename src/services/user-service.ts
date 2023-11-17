@@ -34,7 +34,7 @@ const getUser = async (email: string): Promise<UserProfile> => {
     console.log("User not found or token expired", user)
     return {}
   }
-  
+
   return user
 }
 

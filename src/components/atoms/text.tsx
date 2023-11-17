@@ -9,7 +9,7 @@ export const TextCustom = ({ children, variant = 'normal', style }: { style?: Te
 
 const styles = StyleSheet.create({
   text: {
-    color: 'black',
+    color: '#3A5545',
     fontFamily: 'Shanti-Regular',
   }
 })

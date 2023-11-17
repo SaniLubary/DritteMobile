@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { Button } from '../components/atoms/button';
 import { Navigation } from '../App';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import { useAuth0 } from 'react-native-auth0';
 import { JournalEntry } from '../utils/interfaces';
 import { UserContext } from '../context/user-context';
 import Spinner from '../components/atoms/spinner';
+import { useFocusEffect } from '@react-navigation/native';
 
 export type Emotion = {
   emoji: any;
@@ -38,6 +39,32 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   const { user } = useAuth0()
   const { searchJournals } = useContext(UserContext);
   const [ loading, setLoading ] = useState<boolean>(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        e.preventDefault(); // Prevent default action
+        // Show confirmation alert
+        Alert.alert(
+          'Confirmation',
+          'Are you sure you want to change tabs?',
+          [
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
+            {
+              text: 'Confirm',
+              onPress: () => {
+                navigation.dispatch(e.data.action); // Proceed with tab change
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      });
+
+      return () => unsubscribe();
+    }, [navigation])
+  );
+
 
   const giveEmotionFeedback = async () => {
     const feedback = await getJournalEmotionFeedback(description)
@@ -170,12 +197,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     justifyContent: 'space-between',
+    backgroundColor: 'white',
   },
   inputContainer: {
     marginVertical: 4,
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: 'white'
   },
   input: {
     color: 'black',

@@ -17,7 +17,7 @@ const PositiveEmojiResponse = ({ navigation }: { navigation: Navigation }) => {
         <Image style={{ width: 200, height: 350, position: 'absolute' }} source={require('../assets/britta-happy-full-body.png')} />
       </View>
       
-      <View style={{ top: 100, padding: 50 }}>
+      <View style={{ marginTop: 100, padding: 50 }}>
         <Text style={{ marginBottom: 28 }} variant='normal'>
           Bien! Parece que tuviste un buen dia.
           Recuerda comer algo rico hoy y tomar agua!
@@ -30,10 +30,12 @@ const PositiveEmojiResponse = ({ navigation }: { navigation: Navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  largeImage: {top: 100, height: 400, width: 300, alignItems: 'center' },
-  mediumImage: {top: 25, height: 225, alignItems: 'center' }
+  largeImage: {height: 400, width: 300, alignItems: 'center' },
+  mediumImage: {marginTop: 50, height: 225, alignItems: 'center' }
 });
 
 

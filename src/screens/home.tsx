@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../App';
 import { getUser } from '../services/user-service';
@@ -7,12 +7,15 @@ import { useNavigation } from '@react-navigation/native';
 import { emotions } from './create-entry';
 import Card from '../components/molecules/card';
 import { UserContext } from '../context/user-context';
+import Banner from '../components/organisms/Banner'
 import { TextCustom as Text } from '../components/atoms/text';
+
+const pills = ['FELIZ', 'TRISTE', 'NEUTRAL', 'NUEVOS', 'VIEJOS']
 
 const Home = () => {
   const { user } = useAuth0();
   const { navigate } = useNavigation<Navigation>();
-  const {journals, searchJournals, dbUser, setDbUser} = useContext(UserContext);
+  const { journals, searchJournals, dbUser, setDbUser } = useContext(UserContext);
 
   useEffect(() => {
     searchJournals()
@@ -51,8 +54,15 @@ const Home = () => {
   }, [refreshing])
 
   return (
-    <View style={{ flex: 1 }}>
-      <Text variant='medium' style={styles.entryHeading}>Tu diario</Text>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <Banner />
+
+      <View style={styles.pillsContainer}>
+        <ScrollView horizontal={true} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center',}} >
+          {pills.map((pill) => <TouchableOpacity style={styles.pill}><Text variant='normal'>{pill}</Text></TouchableOpacity>)}
+        </ScrollView>
+      </View>
+
       <ScrollView refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={styles.entriesContainer}>
         {journals.map((journal, index) => (
@@ -71,6 +81,19 @@ const styles = StyleSheet.create({
   entryHeading: {
     marginLeft: 20
   },
+  pillsContainer: {
+    height: 50
+  },
+  pill: {
+    height: 30,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: 'pink',
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
 
 export default Home;

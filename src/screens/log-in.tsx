@@ -18,13 +18,13 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
   const { authorize, isLoading, user } = useAuth0();
   const [savingUser, setSavingUser] = useState<boolean>(false);
   const { t } = useTranslation()
-  const {isMediumScreen} = useScreenSize()
+  const { isMediumScreen } = useScreenSize()
   const [error, setError] = useState<string | null>(null)
-  
+
   useEffect(() => {
     notificationListener(navigate);
   }, [])
-  
+
   const logIn = async () => {
     try {
       const response = await authorize();
@@ -38,50 +38,51 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
     (async function () {
       if (user && user.email) {
         setSavingUser(true);
-        
+
         console.log("User from auth0: " + user.email);
 
         const deviceToken = await getFcmToken()
-        
-        getUser(user.email).then((dbUser: UserProfile) => {
-          if (dbUser.email) {
-            if (isIncompleteProfileCreation(dbUser)) {
-              setSavingUser(false);
-              console.log("Navigating to Profile Creation...")
-              navigate('ProfileCreation')
+
+        getUser(user.email)
+          .then((dbUser: UserProfile) => {
+            if (dbUser.email) {
+              if (isIncompleteProfileCreation(dbUser)) {
+                setSavingUser(false);
+                console.log("Navigating to Profile Creation...")
+                navigate('ProfileCreation')
+                return
+              }
+
+              // If current device token is not in database, add it
+              if (dbUser.deviceTokens && !dbUser.deviceTokens.find((token: string) => token === deviceToken)) {
+                saveUserProfile({ ...dbUser, deviceTokens: [...dbUser.deviceTokens, deviceToken] })
+              }
+
+              locallyStoreUserProfile(dbUser).then(() => {
+                console.log("User locally stored with", dbUser)
+                console.log("Navigating to Home...")
+                navigate('MainScreen')
+                setSavingUser(false);
+              })
+
               return
             }
-            
-            // If current device token is not in database, add it
-            if (dbUser.deviceTokens && !dbUser.deviceTokens.find((token: string) => token === deviceToken)) {
-              saveUserProfile({...dbUser, deviceTokens: [...dbUser.deviceTokens, deviceToken]})
-            }
-            
-            locallyStoreUserProfile(dbUser).then(() => {
-              console.log("User locally stored with", dbUser)
-              console.log("Navigating to Home...")
-              navigate('MainScreen')
-              setSavingUser(false);
-            })
-            
-            return
-          }
 
-          createBaseUser({
-            profileUri: user.picture,
-            email: user.email,
-            deviceTokens: [deviceToken]
-          }).then(() => {
-            setSavingUser(false);
-            console.log("Navigating to Profile Creation...")
-            navigate('ProfileCreation');
-          }).catch(err => console.error(err));
-        }).catch((err) => {
-          if (err.code === 'ERR_BAD_RESPONSE') {
-            setError('Sesión expirada!');
-          }
-          setSavingUser(false)
-        });
+            createBaseUser({
+              profileUri: user.picture,
+              email: user.email,
+              deviceTokens: [deviceToken]
+            }).then(() => {
+              setSavingUser(false);
+              console.log("Navigating to Profile Creation...")
+              navigate('ProfileCreation');
+            }).catch(err => console.error(err));
+          }).catch((err) => {
+            if (err.code === 'ERR_BAD_RESPONSE') {
+              setError('Sesión expirada!');
+            }
+            setSavingUser(false)
+          });
       }
     })().catch((err) => {
       console.log("Error no user/email found on auth0 user", err)

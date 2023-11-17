@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler'
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { Auth0Provider } from 'react-native-auth0';
 import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,6 +18,8 @@ import PositiveEmojiResponse from './screens/positive-emoji-response'
 import NegativeEmojiResponse from './screens/negative-emoji-response'
 import AnswerIntrospectiveQuestion from './screens/answer-introspective-question'
 import { requestUserPermission } from './utils/push-notification-helper';
+import { NewEntryIcon } from './assets/icons/NewEntryIcon'
+import { TabGradiant } from './assets/gradiants/TabGradiant'
 
 const AUTH0_DOMAIN = Config.AUTH0_DOMAIN || '';
 const AUTH0_CLIENT_ID = Config.AUTH0_CLIENT_ID || '';
@@ -33,8 +35,8 @@ export type RootStackParamList = {
   ViewEntry: { entryId: string };
   Profile: undefined;
   PositiveEmojiResponse: undefined;
-  NegativeEmojiResponse: {entryId: number};
-  AnswerIntrospectiveQuestion:  { question: string, entryId: number };
+  NegativeEmojiResponse: { entryId: number };
+  AnswerIntrospectiveQuestion: { question: string, entryId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,12 +44,23 @@ export type Navigation = NavigationProp<RootStackParamList>
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
-  return <Tab.Navigator>
+  return <Tab.Navigator screenOptions={{
+    tabBarBackground() {
+      return <TabGradiant />
+    }, tabBarHideOnKeyboard: true, tabBarLabelStyle: { top: -14, fontSize: 16 }, tabBarActiveTintColor: '#D32455', tabBarInactiveTintColor: '#142F1F'
+  }}>
     <Tab.Screen name="Home" component={Home} options={{
       headerTitle: () => <CustomHeader />,
+      tabBarIcon: () => <></>,
+      tabBarLabel: 'INICIO',
     }} />
-    <Tab.Screen name="CreateEntry" options={{ unmountOnBlur: true, headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
-    </Tab.Navigator>
+    <Tab.Screen name="CreateEntry" options={{ headerShown: false, tabBarLabelPosition: 'below-icon', tabBarIcon: () => <NewEntryIcon />, tabBarLabel: '', unmountOnBlur: true, headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
+    <Tab.Screen name="Achievements" component={Home} options={{
+      headerTitle: () => <CustomHeader />,
+      tabBarIcon: () => <></>,
+      tabBarLabel: 'LOGROS'
+    }} />
+  </Tab.Navigator>
 }
 
 const App = () => {
