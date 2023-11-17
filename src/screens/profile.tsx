@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { locallyClearToken } from '../services/local-auth-service';
 import { locallyClearUserProfile } from '../services/local-user-profile-service';
@@ -9,11 +9,14 @@ import { UserProfile } from '../utils/interfaces';
 import { useNavigation } from '@react-navigation/native';
 import {TextCustom as Text} from '../components/atoms/text';
 import {Button} from '../components/atoms/button';
+import { UserContext } from '../context/user-context';
+import EmojisChart from '../components/molecules/emojis-chart';
 
 const Profile = () => {
   const { clearSession, user } = useAuth0();
   const [dbUser, setDbUser] = useState<UserProfile>();
   const { navigate } = useNavigation<Navigation>();
+  const {journals} = useContext(UserContext);
 
   useEffect(() => {
     if (user?.email) {
@@ -34,9 +37,9 @@ const Profile = () => {
 
   const onLogout = async () => {
     try {
-      clearSession();
-      locallyClearToken();
       locallyClearUserProfile();
+      locallyClearToken();
+      clearSession();
     } catch (e) {
       console.log('Log out cancelled');
     }
@@ -58,7 +61,11 @@ const Profile = () => {
         <Button title='Cerrar Sesion' textVariant='normal' onPress={onLogout} />
       </View> 
 
+
       <View style={{ flex: 1, marginHorizontal: 20, marginBottom: 20, justifyContent: 'flex-end', alignContent: 'center', alignItems: 'center' }}>
+        <View style={{ alignItems: 'center' }}>
+          {journals.length > 0 && <EmojisChart journals={journals} />}
+        </View>
         <Button title='Volver' variant='secondary' textVariant='normal' onPress={() => navigate('MainScreen')} />
       </View> 
     </View>

@@ -15,7 +15,7 @@ const saveJournalEntry = async (journal: JournalEntry): Promise<JournalEntry> =>
     })
 }
 
-const getJournal = async (id:string): Promise<JournalEntry> => {
+const getJournal = async (id: string): Promise<JournalEntry> => {
   const axios = await getAxiosInstance()
   return await axios.get(`/journal/${id}`)
   .then((response) => {

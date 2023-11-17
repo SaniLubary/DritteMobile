@@ -23,11 +23,9 @@ const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, se
         && localUser?.birthDate
         && localUser?.lenguagePreference?.length
         && localUser?.lenguagePreference?.length > 0
-        && localUser?.musicGenres
-        && localUser?.musicGenres.length > 0
       ) {
         user?.email && saveUserProfile({ ...localUser, email: user.email }).then((result) => {
-          console.log('result is', result)
+          console.log('User fully created', result)
           result ? navigate('MainScreen') : navigate('LogIn');
         })
       } else {

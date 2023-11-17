@@ -5,7 +5,7 @@ export default function isIncompleteProfileCreation(dbUser: UserProfile) {
     return !dbUser.birthDate
       || !dbUser.lenguagePreference
       || !dbUser.name
-      || dbUser?.musicGenres?.length === 0
+      // || dbUser?.musicGenres?.length === 0
   } catch (error) {
     console.log("Error", error)
     return false

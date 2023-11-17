@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Button } from '../components/atoms/button';
 import { Navigation } from '../App';
@@ -8,6 +8,8 @@ import { getUser } from '../services/user-service';
 import { getJournalEmotionFeedback, saveJournalEntry } from '../services/journal-service';
 import { useAuth0 } from 'react-native-auth0';
 import { JournalEntry } from '../utils/interfaces';
+import { UserContext } from '../context/user-context';
+import Spinner from '../components/atoms/spinner';
 
 export type Emotion = {
   emoji: any;
@@ -16,7 +18,7 @@ export type Emotion = {
 
 type size = 'small' | 'normal' | 'large'
 
-const selectEmojiSize = (size: size) => size === 'small' ? { width: 60, height: 50 } : size === "large" ? { width: 180, height: 150 } : { width: 100, height: 80 }
+const selectEmojiSize = (size: size) => size === 'small' ? { width: 60, height: 50 } : size === "large" ? { width: 120, height: 100 } : { width: 100, height: 80 }
 
 export const emotions: Emotion[] = [
   { emoji: (size: size) => <Image style={selectEmojiSize(size)} source={require('../assets/emojis/mad.png')} />, value: 'angry' },
@@ -32,8 +34,10 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   const [description, setDescription] = useState<string>('');
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion>();
   const [emotionFeedback, setEmotionFeedback] = useState<Emotion>();
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<{ error: string, input: string } | null>(null);
   const { user } = useAuth0()
+  const { searchJournals } = useContext(UserContext);
+  const [ loading, setLoading ] = useState<boolean>(false);
 
   const giveEmotionFeedback = async () => {
     const feedback = await getJournalEmotionFeedback(description)
@@ -42,30 +46,30 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
     setSelectedEmotion({ emoji: '', value: feedback.emotion })
   }
 
-  const validateForm = () => {
+  const isFormValid = () => {
     if (!title) {
-      setError(t('create-entry:title-required'));
+      setError({ error: t('create-entry:title-required'), input: 'title' });
       return false;
     }
     if (!description) {
-      setError(t('create-entry:description-required'));
+      setError({ error: t('create-entry:description-required'), input: 'description' });
       return false;
     }
     if (!selectedEmotion) {
-      setError(t('create-entry:emotion-required'));
+      setError({ error: t('create-entry:emotion-required'), input: 'emoji' });
       return false;
     }
-    setError('')
+    setError(null)
     return true
   }
 
   useEffect(() => {
-    validateForm()
+    isFormValid()
   }, [title, description, selectedEmotion])
 
   const handleFormSubmit = () => {
-    if (!validateForm() || !selectedEmotion) return
-
+    if (!isFormValid() || !selectedEmotion) return
+    setLoading(true)
     user?.email && getUser(user?.email).then((dbUser) => {
       console.log(dbUser)
       if (dbUser) {
@@ -75,11 +79,12 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
           if (!result) {
             return
           }
-
+          searchJournals()
           if (selectedEmotion?.value === 'happy' || selectedEmotion?.value === 'love') {
+            setLoading(false)
             navigation.navigate('PositiveEmojiResponse')
           } else {
-            console.log("Sending journal id to next page: ", result._id)
+            setLoading(false)
             result._id && navigation.navigate('NegativeEmojiResponse', { entryId: result._id })
           }
         })
@@ -89,6 +94,10 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
     })
   };
 
+  if (loading) {
+    return <View style={{ flex:1 }}><Spinner /></View>
+  }
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text variant='title' style={{ textAlign: 'center' }}>mi entrada diaria</Text>
@@ -103,6 +112,7 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
             value={title}
             placeholder="Un buen dia..."
           />
+          {error && error.input === 'title' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -118,6 +128,7 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
             multiline={true}
             numberOfLines={4}
           />
+          {error && error.input === 'description' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
         </View>
 
         <View style={styles.inputContainer}>
@@ -144,18 +155,12 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
               )
             })}
           </View>
+          {error && error.input === 'emoji' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
         </View>
       </View>
 
       <View>
-        <Text variant='title' style={{ color: 'red' }}>{error}</Text>
-
-        <View>
-          <View style={{ marginBottom: 8 }}>
-            <Button title="Submit" variant={error !== '' ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
-          </View>
-          <Button title={t('createEntry:backButton')} variant='secondary' onPress={() => navigation.navigate('MainScreen')} />
-        </View>
+        <Button title="Enviar" textVariant='medium' variant={!error ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
       </View>
     </ScrollView>
   );
@@ -168,6 +173,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginVertical: 4,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'white'
   },
   input: {
     color: 'black',

@@ -5,14 +5,16 @@ import { Navigation } from '../../App'
 import { JournalEntry } from '../../utils/interfaces'
 import { Emotion } from '../../screens/create-entry'
 import { TextCustom } from '../atoms/text'
+import { useScreenSize } from '../../hooks/useScreenSize'
 
 const Card = ({ emotions, journal, index }: { emotions: Emotion[], journal: JournalEntry, index: number }) => {
     const { navigate } = useNavigation<Navigation>()
+    const { isMediumScreen } = useScreenSize()
 
     return (
-        <TouchableOpacity onPress={() => journal._id && navigate('ViewEntry', { entryId: `${journal._id}` })} key={index} style={styles.card}>
-            {emotions.filter(emotion => emotion.value === journal.emotion)?.[0]?.emoji('normal')}
-            <View style={{ flex: 1, marginLeft: 8 }}>
+        <TouchableOpacity onPress={() => journal._id && navigate('ViewEntry', { entryId: `${journal._id}` })} key={index} style={isMediumScreen() ? styles.cardSmall : styles.card}>
+            {emotions.filter(emotion => emotion.value === journal.emotion)?.[0]?.emoji(isMediumScreen() ?'small': 'normal')}
+            <View style={isMediumScreen() ? {flex: 1, marginLeft: 16} : { flex: 1, marginLeft: 8 }}>
                 <TextCustom variant='normalBold'>{journal.title}</TextCustom>
                 <Text numberOfLines={1} ellipsizeMode='tail' style={styles.description}>{journal.description}</Text>
                 <TextCustom style={{ marginTop: 8 }} variant='normal'>
@@ -26,6 +28,16 @@ const Card = ({ emotions, journal, index }: { emotions: Emotion[], journal: Jour
 export default Card
 
 const styles = StyleSheet.create({
+    cardSmall: {
+        backgroundColor: 'white',
+        padding: 8,
+        marginVertical: 4,
+        borderRadius: 10,
+        elevation: 1,
+        color: 'black',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     card: {
         backgroundColor: 'white',
         padding: 20,

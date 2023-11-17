@@ -19,14 +19,24 @@ export default function getQuestions(
   user: UserProfile,
   t: TFunction<"translation", undefined>
 ) {
-  const pillsMusicGenreData = ['clasica', 'rock', 'pop', 'folk', 'r&b', 'regge', 'rap'];
   const pillsLenguage = ['español', 'english'];
 
   const questions: Question[] = []
 
   console.log("Setting up questions...", user)
 
+  if (!user.lenguagePreference) {
+    console.log("Setting question lenguage preference...")
+    questions.push({
+      title: 'lenguageQuestion',
+      question: t('profileCreation:lenguageQuestion'),
+      input: <MultipleSelectPillsInput title={'lenguageQuestion'} pickOne propertyUpdated='lenguagePreference' pillsData={pillsLenguage} />,
+      image: <BrittaNice />
+    })
+  }
+  
   if (!user.name) {
+    console.log("Setting question name...")
     questions.push({
       title: 'nameQuestion',
       question: t('profileCreation:nameQuestion'),
@@ -34,30 +44,13 @@ export default function getQuestions(
       image: <BrittaSad />
     })
   }
-
+  
   if (!user.birthDate) {
+    console.log("Setting question birthday...")
     questions.push({
       title: 'birthdayQuestion',
       question: t('profileCreation:birthdayQuestion'),
       input: <BirthdayInput title={'birthdayQuestion'} />,
-      image: <BrittaNice />
-    })
-  }
-
-  if (!user.musicGenres || user.musicGenres.length === 0) {
-    questions.push({
-      title: 'musicalGenreQuestion',
-      question: t('profileCreation:musicalGenreQuestion'),
-      input: <MultipleSelectPillsInput title={'musicalGenreQuestion'} propertyUpdated='musicGenres' pillsData={pillsMusicGenreData} />,
-      image: <BrittaNice />
-    })
-  }
-
-  if (!user.lenguagePreference) {
-    questions.push({
-      title: 'lenguageQuestion',
-      question: t('profileCreation:lenguageQuestion'),
-      input: <MultipleSelectPillsInput title={'lenguageQuestion'} pickOne propertyUpdated='lenguagePreference' pillsData={pillsLenguage} />,
       image: <BrittaNice />
     })
   }

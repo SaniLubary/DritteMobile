@@ -26,17 +26,13 @@ const getUser = async (email: string): Promise<UserProfile> => {
   const user = await axios.get(`/user/${email}`)
     .then(response => response.data)
     .catch((err: AxiosError) => {
-      throw err
+        console.log("Error!", err)
+        throw err
     })
 
-  console.log('Found: ', user)
   if (!user) {
     console.log("User not found or token expired", user)
     return {}
-  }
-
-  if (user?.error) {
-    throw Error(user.error)
   }
   
   return user

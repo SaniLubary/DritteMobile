@@ -1,6 +1,5 @@
 import React from 'react';
 import { BarChart } from 'react-native-chart-kit';
-import { View } from 'react-native';
 import { JournalEntry } from '@app/utils/interfaces';
 
 const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
@@ -27,42 +26,43 @@ const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
             case '5':
                 return 'love'
             default:
-                return emotion
+                return ''
         }
     }
 
     const emojiData: number[] = journals.slice(-5).map(journal => emotionMapper(journal.emotion) as number);
-
+    while ( emojiData.length < 5 ) {
+        emojiData.push(1)
+    }
 
     return (
-        <View>
-            <BarChart
-                data={{
-                    labels: [],
-                    datasets: [
-                        {
-                            data: emojiData,
-                        },
-                    ],
-                }}
-                yAxisLabel=''
-                yAxisSuffix=''
-                width={300}
-                height={200}
-                chartConfig={{
-                    decimalPlaces: 0,
-                    formatYLabel: (yLabel) => emotionMapper(yLabel) as string,
-                    backgroundGradientFrom: '#ffc2fb',
-                    backgroundGradientTo: '#ffe4fd',
-                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                }}
-                style={{
-                    marginVertical: 8,
-                    borderRadius: 16,
-                }}
-            />
-        </View>
+        <BarChart
+            data={{
+                labels: [],
+                datasets: [
+                    {
+                        data: emojiData,
+                    },
+                ],
+            }}
+            yAxisLabel=''
+            yAxisSuffix=''
+            width={300}
+            height={100}
+            chartConfig={{
+                decimalPlaces: 0,
+                formatYLabel: (yLabel) => emotionMapper(yLabel) as string,
+                backgroundGradientFrom: '#ffc2fb',
+                barPercentage: 0.8,
+                backgroundGradientTo: '#ffe4fd',
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            style={{
+                marginVertical: 8,
+                borderRadius: 16,
+            }}
+        />
     );
 };
 

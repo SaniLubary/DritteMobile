@@ -26,6 +26,7 @@ requestUserPermission();
 
 export type RootStackParamList = {
   MainScreen: undefined;
+  Home: undefined;
   LogIn: undefined;
   ProfileCreation: undefined;
   CreateEntry: undefined;
@@ -44,9 +45,9 @@ const HomeTab = () => {
   return <Tab.Navigator>
     <Tab.Screen name="Home" component={Home} options={{
       headerTitle: () => <CustomHeader />,
-      tabBarStyle: { display: 'none' }
     }} />
-  </Tab.Navigator>
+    <Tab.Screen name="CreateEntry" options={{ unmountOnBlur: true, headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
+    </Tab.Navigator>
 }
 
 const App = () => {
@@ -61,11 +62,10 @@ const App = () => {
               <Stack.Screen name="ProfileCreation" component={ProfileCreation} />
               <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
                 <Tab.Screen name="ViewEntry" options={{ headerTitle: 'Recuerdas esta entrada? nya!' }} component={ViewEntry} />
-                <Tab.Screen name="CreateEntry" options={{ headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
                 <Tab.Screen name="Profile" options={{ headerTitle: 'Actualiza tu perfil!' }} component={Profile} />
                 <Tab.Screen name="PositiveEmojiResponse" options={{ headerTitle: 'Nice!' }} component={PositiveEmojiResponse} />
                 <Tab.Screen name="NegativeEmojiResponse" options={{ headerTitle: 'Ohh :(' }} component={NegativeEmojiResponse} />
-                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Ohh :(' }} component={AnswerIntrospectiveQuestion} />
+                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Nice!' }} component={AnswerIntrospectiveQuestion} />
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

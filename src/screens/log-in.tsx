@@ -12,12 +12,14 @@ import { useTranslation } from 'react-i18next';
 import Spinner from '../components/atoms/spinner';
 import { getFcmToken, notificationListener } from '../utils/push-notification-helper';
 import { UserProfile } from '../utils/interfaces';
+import { useScreenSize } from '../hooks/useScreenSize';
 
 export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { authorize, isLoading, user } = useAuth0();
   const [savingUser, setSavingUser] = useState<boolean>(false);
   const { t } = useTranslation()
-
+  const {isMediumScreen} = useScreenSize()
+  const [error, setError] = useState<string | null>(null)
   
   useEffect(() => {
     notificationListener(navigate);
@@ -74,15 +76,16 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
             console.log("Navigating to Profile Creation...")
             navigate('ProfileCreation');
           }).catch(err => console.error(err));
-        }).catch(err => {
-          console.log("Error getting user from db", err)
+        }).catch((err) => {
+          if (err.code === 'ERR_BAD_RESPONSE') {
+            setError('Sesión expirada!');
+          }
           setSavingUser(false)
         });
       }
-    })().catch(err => {
-      console.log("Error getting user from db", err)
+    })().catch((err) => {
+      console.log("Error no user/email found on auth0 user", err)
       setSavingUser(false)
-      return
     });
   }, [user]);
 
@@ -95,14 +98,15 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
   }
 
   return (
-    <ImageBackground style={styles.container} source={require('../assets/bg.png')}>
+    <View style={styles.container}>
       <Image style={{ width: 200, height: 400 }} source={require('../assets/britta-happy-full-body.png')} />
-      <View style={styles.greetings}>
+      <View style={isMediumScreen() ? styles.greetingsMedium : styles.greetingsLarge}>
         <Text variant='title' style={{ textAlign: 'center' }}>Hola!</Text>
         <Text variant='normalBold' style={{ textAlign: 'center' }}>{t('logIn:text')}</Text>
       </View>
+      {error && <Text variant='medium' style={{ textAlign: 'center', color: 'red' }}>{error}</Text>}
       <Button onPress={logIn} variant='secondary' title={t('logIn:login')} />
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -113,7 +117,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  greetings: {
+  greetingsLarge: {
     margin: 50,
+  },
+  greetingsMedium: {
+    margin: 10,
   }
 });

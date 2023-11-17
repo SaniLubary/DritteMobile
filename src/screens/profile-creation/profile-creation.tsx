@@ -1,62 +1,59 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../../App';
-import { UserProfile } from '../../utils/interfaces';
 import { getUser } from '../../services/user-service';
 import { ProfileCreationProvider } from '../../context/profile-creation-context';
 import ProfileCreationFlowButtons from '../../components/molecules/profile-creation-flow-buttons';
 import getQuestions, { Question } from './get-questions';
-import {TextCustom as Text} from '../../components/atoms/text';
+import { TextCustom as Text } from '../../components/atoms/text';
 import Spinner from '../../components/atoms/spinner';
+import { locallyRetrieveUserProfile, locallyStoreUserProfile } from '../../services/local-user-profile-service';
+import { UserProfile } from '@app/utils/interfaces';
 
 export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { t } = useTranslation();
   const { user } = useAuth0();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [dbUser, setDbUser] = useState<UserProfile>();
   const [loadingQuestions, setLoadingQuestions] = useState<boolean>(true);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+  const [localUser, setLocalUser ] = useState<UserProfile>()
 
   useEffect(() => {
     (async function () {
-      const dbUserRetrieved = user?.email && await getUser(user?.email)
-      if (dbUserRetrieved) {
-        setDbUser(dbUserRetrieved)
-        return
+      let userToUse
+      userToUse = await locallyRetrieveUserProfile()
+      if (!userToUse?.birthDate && !userToUse?.name && !userToUse?.lenguagePreference) {
+        userToUse = user?.email && await getUser(user?.email)
       }
-      console.log("Navigating to Home page from ProfileCreation...")
-      navigate('MainScreen')
+
+      if(userToUse !== '') {
+        console.log("Trying to set up questions...")
+        console.log("Using localUser: ", userToUse)
+        const questions = userToUse ? getQuestions(userToUse, t) : []
+        setQuestions(questions)
+        console.log("Questions", questions)
+        
+        setLocalUser(userToUse)
+        userToUse && locallyStoreUserProfile(userToUse)
+        setLoadingQuestions(false)
+      }
     })()
   }, []);
 
   useEffect(() => {
-    setCurrentQuestionIndex(0);
-  }, []);
+    setCurrentQuestion(questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null)
+  }, [questions, currentQuestionIndex])
 
-  const questions = useMemo<Question[]>(() => {
-    if (!dbUser) {
-      return []
-    }
-    console.log("Trying to set up questions...")
-    console.log("Using dbUser: ", dbUser)
-    const questions = dbUser ? getQuestions(dbUser, t) : []
-    setLoadingQuestions(false)
-    return questions
-  }, [dbUser]);
-
-  const currentQuestion = questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null
 
   if (loadingQuestions) {
-    return <View><Spinner /></View>
-  }
-
-  if (!loadingQuestions && !currentQuestion) {
-    navigate('MainScreen');
+    return <View style={{ flex:1 }}><Spinner /></View>
   }
 
   return (
-    <ProfileCreationProvider>
+    <ProfileCreationProvider user={localUser}>
       {currentQuestion ?
         <View style={styles.container}>
           {currentQuestion.image}
@@ -75,7 +72,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
             questions={questions}
           />
         </View>
-      : <></>}
+        : <></>}
     </ProfileCreationProvider>
   );
 };

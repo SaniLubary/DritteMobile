@@ -31,13 +31,13 @@ const ProfileCreationContext = createContext<IProfileCreationContext>({
   setLocalUser: () => { }
 });
 
-const ProfileCreationProvider = ({ children }: {children: ReactNode}) => {
+const ProfileCreationProvider = ({ children, user }: {children: ReactNode, user: UserProfile | undefined}) => {
   const [questions, setQuestions] = useState(initialQuestionsStatusState);
-  const [localUser, setLocalUser] = useState<UserProfile | undefined>({});
+  const [localUser, setLocalUser] = useState<UserProfile | undefined>(user);
 
   useEffect(() => {
+    console.log("User storing locally is", localUser)
     localUser && locallyStoreUserProfile(localUser)
-    console.log("local user was", localUser)
   }, [localUser])
 
   const answered = (title: string) => {

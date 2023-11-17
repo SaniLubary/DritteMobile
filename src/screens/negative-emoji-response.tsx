@@ -1,9 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { Navigation } from '../App';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Navigation, RootStackParamList } from '../App';
 import { TextCustom as Text } from '../components/atoms/text';
 import { Button } from '../components/atoms/button';
-import { useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useScreenSize } from '../hooks/useScreenSize';
 
 const introspectiveQuestions = [
   "What am I feeling right now?",
@@ -26,33 +27,39 @@ function getRandomIntrospectiveQuestion() {
 }
 
 const PositiveEmojiResponse = ({ navigation }: { navigation: Navigation }) => {
-  const route = useRoute()
+  const route = useRoute<RouteProp<RootStackParamList,'NegativeEmojiResponse'>>()
   const question = getRandomIntrospectiveQuestion()
+  const { isMediumScreen } = useScreenSize()
 
   return (
-    <View style={styles.container}>
-      <View style={{ top: 50, height: 400, width: 300, alignItems: 'center' }}>
-        <Image style={{ width: 210, height: 190, position: 'absolute', top: 50 }} source={require('../assets/blobs/red-blob.png')} />
-        <Image style={{ width: 200, height: 350, position: 'absolute' }} source={require('../assets/britta-upset-full-body.png')} />
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={isMediumScreen() ? styles.mediumImage : styles.largeImage}>
+        <Image style={{ width: 118, height: 105, position: 'absolute', marginTop: 50 }} source={require('../assets/blobs/red-blob.png')} />
+        <Image style={isMediumScreen() ? styles.mediumBritta : styles.largeBritta} source={require('../assets/britta-upset-full-body.png')} />
       </View>
 
-      <View style={{ top: 100, paddingHorizontal: 50 }}>
+      <View style={{ paddingHorizontal: 50 }}>
         <Text style={{ marginBottom: 8 }} variant='normal'>
           oh!  Looks like you faced a troubled day.
         </Text>
         <Text style={{ marginBottom: 8 }} variant='normal'>{`Would you like to answer the following questions for yoursef of the future?`}</Text>
         <Text style={{ marginBottom: 28 }} variant='normalBold'>{question}</Text>
-        <Button title="Volver" variant='secondary' onPress={() => navigation.navigate('MainScreen')} />
+        <Button title="Volver" variant='secondary' onPress={() => navigation.navigate('Home')} />
         <Button title="Responder" variant='primary' onPress={() => navigation.navigate('AnswerIntrospectiveQuestion', { question, entryId: route?.params?.['entryId'] })} />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
   },
+  largeImage: { marginTop: 50, height: 400, width: 300, alignItems: 'center' },
+  mediumImage: { height: 230, width: 300, alignItems: 'center' },
+  largeBritta: { width: 200, height: 350, position: 'absolute'},
+  mediumBritta: { width: 100, height: 180, position: 'absolute', marginTop: 25 }
 });
 
 

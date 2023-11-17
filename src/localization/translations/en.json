@@ -18,11 +18,14 @@
       "rap": "rap"
     }
   },
-  "createEntry": {
-    "backButton": "Cancel"
+  "create-entry": {
+    "backButton": "Cancel",
+    "title-required": "Agrega un titulo!",
+    "description-required": "Describe tu dia!",
+    "description-emotion": "Agrega un emoji!"
   },
   "logIn": {
-    "text": "Best place to save your feelings.",
+    "text": "Conoce tus emociones!",
     "login": "Start"
   }
 }

@@ -6,7 +6,7 @@ import { UserProfile } from '../../utils/interfaces';
 import { locallyRetrieveUserProfile } from '../../services/local-user-profile-service';
 import { ProfileCreationContext } from '../../context/profile-creation-context';
 
-export default ({ title }) => {
+export default ({ title }: { title: string }) => {
   const { t } = useTranslation();
   const { answered, setLocalUser, localUser } = useContext(ProfileCreationContext)
 
@@ -19,7 +19,7 @@ export default ({ title }) => {
 
   useEffect(() => {
     (async () => {
-      const localUser: UserProfile = await locallyRetrieveUserProfile()
+      const localUser: UserProfile = await locallyRetrieveUserProfile() || {}
       if (localUser && localUser.birthDate) {
         setDate(new Date(localUser.birthDate))
       }
