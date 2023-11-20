@@ -32,7 +32,6 @@ const getJournals = async (email:string): Promise<JournalEntry[]> => {
   const axios = await getAxiosInstance()
   return await axios.get(`/journal/all/${email}`)
   .then((response) => {
-    console.log('Journals found: ', response.data)
     return response.data
   })
   .catch(err => {

@@ -6,6 +6,11 @@ interface UserProfile {
   birthDate?: Date;
   musicGenres?: string[]
   email?: string;
+  achievements?: {
+    achievementId: string;
+    notified: boolean;
+    dateWon: Date;
+  }
 }
 
 interface JournalEntry {
@@ -19,4 +24,27 @@ interface JournalEntry {
   createdAt?: Date
 }
 
-export type { UserProfile, JournalEntry }
+interface Emotions {
+  type: string;
+  total: number;
+  week: number;
+  day: number;
+}
+
+interface Criteria {
+  emotions: Emotions[];
+  totalJournals: number;
+  perWeekJournals: number;
+  perDayJournals: number;
+  totalAnsweredQuestions: number;
+}
+
+interface Achievements {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  criteria: Criteria;
+}
+
+export type { UserProfile, JournalEntry, Achievements }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import { Button, Text } from 'react-native'
+import { Button, Text, TouchableOpacity } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import { UserProfile } from '../../utils/interfaces';
 import { locallyRetrieveUserProfile } from '../../services/local-user-profile-service';
@@ -36,21 +36,22 @@ export default ({ title }: { title: string }) => {
 
   return (
     <>
-      <Button title={t('profileCreation:birthdayInputTitle')} onPress={() => setOpen(true)} />
+      <TouchableOpacity onPress={() => setOpen(true)}>
       <Text style={{ color: 'black' }}>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</Text>
-      <DatePicker
-        modal
-        open={open}
-        mode='date'
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false)
-          setDate(date)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      />
+        <DatePicker
+          modal
+          open={open}
+          mode='date'
+          date={date}
+          onConfirm={(date) => {
+            setOpen(false)
+            setDate(date)
+          }}
+          onCancel={() => {
+            setOpen(false)
+          }}
+        />
+      </TouchableOpacity>
     </>
   )
 }

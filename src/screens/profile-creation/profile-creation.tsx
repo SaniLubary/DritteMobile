@@ -11,6 +11,9 @@ import { TextCustom as Text } from '../../components/atoms/text';
 import Spinner from '../../components/atoms/spinner';
 import { locallyRetrieveUserProfile, locallyStoreUserProfile } from '../../services/local-user-profile-service';
 import { UserProfile } from '@app/utils/interfaces';
+import BgProfileCreation from '../../assets/gradiants/bg-profile-creation'
+import { useScreenSize } from '../../hooks/useScreenSize';
+import Arrow from '../../assets/icons/arrow';
 
 export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { t } = useTranslation();
@@ -19,7 +22,8 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   const [loadingQuestions, setLoadingQuestions] = useState<boolean>(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
-  const [localUser, setLocalUser ] = useState<UserProfile>()
+  const [localUser, setLocalUser] = useState<UserProfile>()
+  const {screenSize} = useScreenSize()
 
   useEffect(() => {
     (async function () {
@@ -29,16 +33,20 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
         userToUse = user?.email && await getUser(user?.email)
       }
 
-      if(userToUse !== '') {
+      if (userToUse !== '') {
         console.log("Trying to set up questions...")
         console.log("Using localUser: ", userToUse)
         const questions = userToUse ? getQuestions(userToUse, t) : []
         setQuestions(questions)
         console.log("Questions", questions)
-        
+
         setLocalUser(userToUse)
         userToUse && locallyStoreUserProfile(userToUse)
         setLoadingQuestions(false)
+        
+        if (questions.length === 0) {
+          navigate('MainScreen')
+        }
       }
     })()
   }, []);
@@ -47,30 +55,42 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
     setCurrentQuestion(questions[currentQuestionIndex] ? questions[currentQuestionIndex] : null)
   }, [questions, currentQuestionIndex])
 
+  const handlePrevQuestion = () => {
+    
+  }
 
   if (loadingQuestions) {
-    return <View style={{ flex:1 }}><Spinner /></View>
+    return <View style={{ flex: 1 }}><Spinner /></View>
   }
 
   return (
     <ProfileCreationProvider user={localUser}>
       {currentQuestion ?
         <View style={styles.container}>
-          {currentQuestion.image}
+          <BgProfileCreation style={{ position: 'absolute' }} />
+          <View style={{ position: 'absolute', top: 0, margin: 24, transform: [{rotate: '180deg'}] }}>
+            <Arrow color={'#fff'} onPress={handlePrevQuestion}/>
+          </View>
 
-          <Text variant='title'>
-            {currentQuestion.question}
+          <View style={{ position: 'absolute', top: 250, left: 200 }}>
+            {currentQuestion.image}
+          </View>
+
+          <Text variant='normal' style={{ margin: 24, color: 'white', fontSize: 24, width: screenSize.width / 2 }}>
+            {currentQuestion.question.toUpperCase()}
           </Text>
 
-          {currentQuestion?.input}
+          <View style={{ flexDirection: 'row', alignSelf: 'center', bottom: 0, position: 'absolute', alignItems: 'center', justifyContent: 'space-around', width: screenSize.width }}>
+            {currentQuestion?.input}
 
-          <ProfileCreationFlowButtons
-            title={currentQuestion.title}
-            setCurrentQuestionIndex={setCurrentQuestionIndex}
-            currentQuestionIndex={currentQuestionIndex}
-            navigate={navigate}
-            questions={questions}
-          />
+            <ProfileCreationFlowButtons
+              title={currentQuestion.title}
+              setCurrentQuestionIndex={setCurrentQuestionIndex}
+              currentQuestionIndex={currentQuestionIndex}
+              navigate={navigate}
+              questions={questions}
+            />
+          </View>
         </View>
         : <></>}
     </ProfileCreationProvider>
@@ -81,8 +101,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F2AEC0',
   },
   title: {
     color: 'black',

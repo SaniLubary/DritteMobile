@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
 import { ProfileCreationContext } from '../../context/profile-creation-context';
 import { saveUserProfile } from '../../services/user-service';
 import { useAuth0 } from 'react-native-auth0';
-import { Button } from '../atoms/button';
 import { Navigation } from '../../App';
 import { Question } from '../../screens/profile-creation/get-questions';
+import Arrow from '../../assets/icons/arrow'
 
 const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, setCurrentQuestionIndex, navigate }: {
   questions: Question[], title: string, currentQuestionIndex: number, setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>, navigate: Navigation['navigate']
@@ -34,17 +33,8 @@ const ProfileCreationFlowButtons = ({ questions, title, currentQuestionIndex, se
     }
   };
 
-  const handlePrevQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
   return (
-    <View>
-      <Button disabled={!isAnswered(title)} onPress={handleNextQuestion} title={t('profileCreation:next')} />
-      {currentQuestionIndex > 0 && <Button onPress={handlePrevQuestion} title={t('profileCreation:prev')} />}
-    </View>
+      <Arrow color={!isAnswered(title) ? '#838383' : '#D32455'} disabled={!isAnswered(title)} onPress={handleNextQuestion}/>
   )
 }
 

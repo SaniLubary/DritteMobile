@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Button } from '../components/atoms/button';
 import { Navigation } from '../App';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,6 @@ import { useAuth0 } from 'react-native-auth0';
 import { JournalEntry } from '../utils/interfaces';
 import { UserContext } from '../context/user-context';
 import Spinner from '../components/atoms/spinner';
-import { useFocusEffect } from '@react-navigation/native';
 
 export type Emotion = {
   emoji: any;
@@ -36,35 +35,9 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion>();
   const [emotionFeedback, setEmotionFeedback] = useState<Emotion>();
   const [error, setError] = useState<{ error: string, input: string } | null>(null);
-  const { user } = useAuth0()
+  const { user, clearSession } = useAuth0()
   const { searchJournals } = useContext(UserContext);
-  const [ loading, setLoading ] = useState<boolean>(false);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-        e.preventDefault(); // Prevent default action
-        // Show confirmation alert
-        Alert.alert(
-          'Confirmation',
-          'Are you sure you want to change tabs?',
-          [
-            { text: 'Cancel', style: 'cancel', onPress: () => {} },
-            {
-              text: 'Confirm',
-              onPress: () => {
-                navigation.dispatch(e.data.action); // Proceed with tab change
-              },
-            },
-          ],
-          { cancelable: false }
-        );
-      });
-
-      return () => unsubscribe();
-    }, [navigation])
-  );
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   const giveEmotionFeedback = async () => {
     const feedback = await getJournalEmotionFeedback(description)
@@ -97,34 +70,33 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   const handleFormSubmit = () => {
     if (!isFormValid() || !selectedEmotion) return
     setLoading(true)
-    user?.email && getUser(user?.email).then((dbUser) => {
-      console.log(dbUser)
-      if (dbUser) {
-        const newJournalEntry = { title, description, emotion: selectedEmotion.value }
-        user?.email && saveJournalEntry({ ...newJournalEntry, userEmail: user.email }).then((result: JournalEntry) => {
-          console.log("New journal", result)
-          if (!result) {
-            return
-          }
-          searchJournals()
-          if (selectedEmotion?.value === 'happy' || selectedEmotion?.value === 'love') {
-            setLoading(false)
-            navigation.navigate('PositiveEmojiResponse')
-          } else {
-            setLoading(false)
-            result._id && navigation.navigate('NegativeEmojiResponse', { entryId: result._id })
-          }
-        })
-      } else {
-        console.error("Validation Error saving user profile with data: ", dbUser, title, description, selectedEmotion.value,)
-      }
-    })
+    user?.email && getUser(user?.email)
+      .then((dbUser) => {
+        if (dbUser) {
+          const newJournalEntry = { title, description, emotion: selectedEmotion.value }
+          user?.email && saveJournalEntry({ ...newJournalEntry, userEmail: user.email }).then((result: JournalEntry) => {
+            if (!result) {
+              return
+            }
+            searchJournals()
+            if (selectedEmotion?.value === 'happy' || selectedEmotion?.value === 'love') {
+              setLoading(false)
+              navigation.navigate('PositiveEmojiResponse')
+            } else {
+              setLoading(false)
+              result._id && navigation.navigate('NegativeEmojiResponse', { entryId: result._id })
+            }
+          })
+        } else {
+          console.error("Validation Error saving user profile with data: ", dbUser, title, description, selectedEmotion.value,)
+        }
+      }).catch(err => clearSession())
   };
 
   if (loading) {
-    return <View style={{ flex:1 }}><Spinner /></View>
+    return <View style={{ flex: 1 }}><Spinner /></View>
   }
-  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text variant='title' style={{ textAlign: 'center' }}>mi entrada diaria</Text>

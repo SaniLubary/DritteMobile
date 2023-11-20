@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../App';
 import { locallyStoreToken } from '../services/local-auth-service';
@@ -13,6 +13,7 @@ import Spinner from '../components/atoms/spinner';
 import { getFcmToken, notificationListener } from '../utils/push-notification-helper';
 import { UserProfile } from '../utils/interfaces';
 import { useScreenSize } from '../hooks/useScreenSize';
+import BgCircles from '../assets/gradiants/bg-circles'
 
 export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) => {
   const { authorize, isLoading, user } = useAuth0();
@@ -20,6 +21,7 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
   const { t } = useTranslation()
   const { isMediumScreen } = useScreenSize()
   const [error, setError] = useState<string | null>(null)
+  const { screenSize } = useScreenSize()
 
   useEffect(() => {
     notificationListener(navigate);
@@ -59,7 +61,6 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
               }
 
               locallyStoreUserProfile(dbUser).then(() => {
-                console.log("User locally stored with", dbUser)
                 console.log("Navigating to Home...")
                 navigate('MainScreen')
                 setSavingUser(false);
@@ -100,23 +101,23 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
 
   return (
     <View style={styles.container}>
-      <Image style={{ width: 200, height: 400 }} source={require('../assets/britta-happy-full-body.png')} />
-      <View style={isMediumScreen() ? styles.greetingsMedium : styles.greetingsLarge}>
-        <Text variant='title' style={{ textAlign: 'center' }}>Hola!</Text>
-        <Text variant='normalBold' style={{ textAlign: 'center' }}>{t('logIn:text')}</Text>
+      <BgCircles style={{ position: 'absolute' }} />
+      <Image style={{ width: 400, height: 900, top: 125, position: 'absolute' }} source={require('../assets/britta-happy-full-body.png')} />
+      <View style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={isMediumScreen() ? styles.greetingsMedium : styles.greetingsLarge}>
+          <Text variant='title' style={{ textAlign: 'center', fontSize: 70, color: 'white' }}>DRITTE</Text>
+          <Text variant='normal' style={{ textAlign: 'center', color: 'white' }}>{t('logIn:text').toUpperCase()}</Text>
+        </View>
+        {error && <Text variant='medium' style={{ textAlign: 'center', color: 'red' }}>{error}</Text>}
+        <Button style={{ width: screenSize.width * 0.8, top: screenSize.height * 0.6, alignSelf: 'center' }} onPress={logIn} variant='primary' title={t('logIn:login')} />
       </View>
-      {error && <Text variant='medium' style={{ textAlign: 'center', color: 'red' }}>{error}</Text>}
-      <Button onPress={logIn} variant='secondary' title={t('logIn:login')} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F2AEC0',
   },
   greetingsLarge: {
     margin: 50,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import {TextCustom} from '../atoms/text';
 import { useNavigation } from '@react-navigation/native';

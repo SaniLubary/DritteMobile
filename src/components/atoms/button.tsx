@@ -2,9 +2,9 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { TextCustom} from './text'
 
-export const Button = ({ title, onPress, disabled = false, variant = 'primary', textVariant = 'title' }: { title: string, onPress: () => void, disabled?: boolean, variant?: keyof typeof variantStyles, textVariant?: "title" | "normal" | "normalBold" | "medium" }) => {
+export const Button = ({ title, onPress, disabled = false, variant = 'primary', textVariant = 'title', style }: { title: string, onPress: () => void, disabled?: boolean, variant?: keyof typeof variantStyles, textVariant?: "title" | "normal" | "normalBold" | "medium", style?: any}) => {
   return (
-    <TouchableOpacity style={[styles.button, variantStyles[variant], disabled && { backgroundColor: '#435E4E' }]} onPress={disabled ? () => { } : onPress}>
+    <TouchableOpacity style={[styles.button, variantStyles[variant], disabled && { backgroundColor: '#435E4E' }, style]} onPress={disabled ? () => { } : onPress}>
       <TextCustom variant={textVariant} style={{ color: variant === 'secondary' ? "#D32455" : 'white' }}>{title}</TextCustom>
     </TouchableOpacity>
   )
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 const variantStyles = StyleSheet.create({
   primary: {
-    backgroundColor: '#F5649E'
+    backgroundColor: '#D32455'
   },
   secondary: {
     backgroundColor: '#FFF7FA'

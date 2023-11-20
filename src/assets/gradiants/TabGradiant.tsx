@@ -1,14 +1,20 @@
+import { useScreenSize } from "../../hooks/useScreenSize"
 import * as React from "react"
+import { Text } from "react-native";
 import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg"
-const TabGradiant = (props: any) => (
+const TabGradiant = (props: any) => {
+  const {isMediumScreen} = useScreenSize();
+  const pathWidth = isMediumScreen() ? 768 : 1000;
+  
+  return (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={360}
+    width={pathWidth}
     height={56}
     fill="none"
     {...props}
   >
-    <Path fill="url(#a)" d="M0 0h360v56H0z" />
+    <Path fill="url(#a)" d={`M0 0h${pathWidth}v56H0z`} />
     <Defs>
       <LinearGradient
         id="a"
@@ -23,5 +29,5 @@ const TabGradiant = (props: any) => (
       </LinearGradient>
     </Defs>
   </Svg>
-)
+)}
 export {TabGradiant}

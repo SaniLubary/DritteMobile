@@ -50,9 +50,10 @@ const styles = StyleSheet.create({
     height: 40,
     width: 180,
     margin: 12,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#777777',
     padding: 10,
-    color: 'black',
+    color: '#000000',
   },
 });
 

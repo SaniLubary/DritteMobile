@@ -8,7 +8,7 @@ const saveUserProfile = async (userProfile: UserProfile) => {
   if (typeof userProfile.lenguagePreference !== 'string') {
     userProfile.lenguagePreference = userProfile.lenguagePreference && userProfile.lenguagePreference[0]
   }
-  return await axios.put(`/user/${userProfile.email}`, userProfile)
+  return await axios.put(`/user`, userProfile)
     .then((response) => {
       console.log('User saved: ', response.data)
       locallyStoreUserProfile(response.data)
@@ -23,7 +23,7 @@ const saveUserProfile = async (userProfile: UserProfile) => {
 const getUser = async (email: string): Promise<UserProfile> => {
   const axios = await getAxiosInstance();
   console.log(`Trying to get user with email ${email}...`)
-  const user = await axios.get(`/user/${email}`)
+  const user = await axios.get(`/user`)
     .then(response => response.data)
     .catch((err: AxiosError) => {
         console.log("Error!", err)

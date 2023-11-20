@@ -9,7 +9,7 @@ import { LogIn } from './screens/log-in';
 import { ProfileCreation } from './screens/profile-creation/profile-creation';
 import Home from './screens/home';
 import { UserProvider } from './context/user-context';
-import CustomHeader from './components/organisms/CustomHeader';
+import CustomHeader from './components/organisms/custom-header';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CreateEntry from './screens/create-entry';
 import ViewEntry from './screens/view-entry';
@@ -18,8 +18,9 @@ import PositiveEmojiResponse from './screens/positive-emoji-response'
 import NegativeEmojiResponse from './screens/negative-emoji-response'
 import AnswerIntrospectiveQuestion from './screens/answer-introspective-question'
 import { requestUserPermission } from './utils/push-notification-helper';
-import { NewEntryIcon } from './assets/icons/NewEntryIcon'
+import { NewEntryIcon } from './assets/icons/new-entry-icon'
 import { TabGradiant } from './assets/gradiants/TabGradiant'
+import { useScreenSize } from './hooks/useScreenSize';
 
 const AUTH0_DOMAIN = Config.AUTH0_DOMAIN || '';
 const AUTH0_CLIENT_ID = Config.AUTH0_CLIENT_ID || '';
@@ -44,10 +45,12 @@ export type Navigation = NavigationProp<RootStackParamList>
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
+  const {isMediumScreen} = useScreenSize()
+  
   return <Tab.Navigator screenOptions={{
     tabBarBackground() {
       return <TabGradiant />
-    }, tabBarHideOnKeyboard: true, tabBarLabelStyle: { top: -14, fontSize: 16 }, tabBarActiveTintColor: '#D32455', tabBarInactiveTintColor: '#142F1F'
+    }, tabBarHideOnKeyboard: true, tabBarLabelStyle: isMediumScreen() ? { top: -14, fontSize: 16 }:{ top: -4, fontSize: 24 }, tabBarActiveTintColor: '#D32455', tabBarInactiveTintColor: '#142F1F'
   }}>
     <Tab.Screen name="Home" component={Home} options={{
       headerTitle: () => <CustomHeader />,

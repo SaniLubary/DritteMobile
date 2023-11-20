@@ -1,5 +1,4 @@
 import React from 'react';
-import BrittaSad from '../../assets/britta-1-full-bodie'
 import BrittaNice from '../../assets/britta-2-full-bodie'
 
 import NameInput from '../../components/molecules/name-input';
@@ -41,7 +40,7 @@ export default function getQuestions(
       title: 'nameQuestion',
       question: t('profileCreation:nameQuestion'),
       input: <NameInput title={'nameQuestion'} />,
-      image: <BrittaSad />
+      image: <BrittaNice />
     })
   }
   

@@ -16,9 +16,9 @@ const Pill = ({ label, onPress, selected }: {label: string, onPress: () => void,
     <TouchableOpacity
       onPress={onPress}
       // eslint-disable-next-line react-native/no-inline-styles
-      style={[styles.pill, { backgroundColor: selected ? 'black' : 'white' }]}>
+      style={[styles.pill, { backgroundColor: selected ? '#D32455' : 'white' }]}>
       {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <Text style={[styles.pillText, { color: selected ? 'white' : 'black' }]}>
+      <Text style={[styles.pillText, { color: selected ? 'white' : '#D32455' }]}>
         {label}
       </Text>
     </TouchableOpacity>
@@ -114,9 +114,6 @@ const styles = StyleSheet.create({
   pill: {
     width: pillWith,
     height: 40,
-    borderStyle: 'solid',
-    borderColor: 'black',
-    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40,
