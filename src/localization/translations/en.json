@@ -2,12 +2,12 @@
   "profileCreation": {
     "next": "Next",
     "prev": "Previous",
-    "nameQuestion": "Hello! How can I call you?",
-    "birthdayQuestion": "When is your birthday?",
+    "nameQuestion": "Como te puedo llamar?",
+    "birthdayQuestion": "Cuando naciste?",
     "birthdayInputTitle": "Select your birthday",
     "musicalGenreQuestion": "What are your favorite musical genres?",
     "pronounsQuestion": "With which pronouns do you identify?",
-    "lenguageQuestion": "What lenguage do you prefer?",
+    "lenguageQuestion": "Que lenguaje prefieres?",
     "genres": {
       "clasica": "clasica",
       "rock": "rock",

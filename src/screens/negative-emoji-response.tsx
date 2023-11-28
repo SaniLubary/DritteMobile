@@ -7,18 +7,18 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { useScreenSize } from '../hooks/useScreenSize';
 
 const introspectiveQuestions = [
-  "What am I feeling right now?",
-  "Can I identify the root cause of this emotion?",
-  "How is this emotion affecting my thoughts and actions?",
-  "Have I felt this way before in similar situations?",
-  "What are the physical sensations associated with this emotion?",
-  "What thoughts or beliefs might be contributing to this emotion?",
-  "Is there something I'm avoiding or not addressing that's related to this feeling?",
-  "How would I like to feel in this situation, and what steps can I take to move toward that emotion?",
-  "What can I learn from this emotion about my needs and values?",
-  "Are there any recurring patterns or triggers for this emotion in my life?",
-  "How do I typically cope with this emotion, and is there a more effective way to manage it?",
-  "Can I practice self-compassion and understanding toward myself for experiencing this emotion?",
+  "¿Qué estoy sintiendo en este momento?",
+  "¿Puedo identificar la causa raíz de esta emoción?",
+  "¿Cómo está afectando esta emoción mis pensamientos y acciones?",
+  "¿He sentido esto antes en situaciones similares?",
+  "¿Cuáles son las sensaciones físicas asociadas con esta emoción?",
+  "¿Qué pensamientos o creencias podrían estar contribuyendo a esta emoción?",
+  "¿Hay algo que esté evitando o que no esté abordando y que esté relacionado con este sentimiento?",
+  "¿Cómo me gustaría sentirme en esta situación y qué pasos puedo tomar para moverme hacia esa emoción?",
+  "¿Qué puedo aprender de esta emoción sobre mis necesidades y valores?",
+  "¿Existen patrones recurrentes o desencadenantes para esta emoción en mi vida?",
+  "¿Cómo suelo afrontar esta emoción y hay una manera más efectiva de manejarla?",
+  "¿Puedo practicar la autocompasión y comprensión hacia mí mismo por experimentar esta emoción?",
 ];
 
 function getRandomIntrospectiveQuestion() {
@@ -40,9 +40,9 @@ const PositiveEmojiResponse = ({ navigation }: { navigation: Navigation }) => {
 
       <View style={{ paddingHorizontal: 50 }}>
         <Text style={{ marginBottom: 8 }} variant='normal'>
-          oh!  Looks like you faced a troubled day.
+          oh!  Parece que tuviste un dia complicado.
         </Text>
-        <Text style={{ marginBottom: 8 }} variant='normal'>{`Would you like to answer the following questions for yoursef of the future?`}</Text>
+        <Text style={{ marginBottom: 8 }} variant='normal'>{`Te gustaria responder la siguiente pregunta para el vos del futuro?`}</Text>
         <Text style={{ marginBottom: 28 }} variant='normalBold'>{question}</Text>
         <Button title="Volver" variant='secondary' onPress={() => navigation.navigate('Home')} />
         <Button title="Responder" variant='primary' onPress={() => navigation.navigate('AnswerIntrospectiveQuestion', { question, entryId: route?.params?.['entryId'] })} />

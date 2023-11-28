@@ -1,5 +1,6 @@
 import { JournalEntry } from "@app/utils/interfaces"
 import getAxiosInstance from "./base-config";
+import { EmotionValues } from "@app/screens/create-entry";
 
 const saveJournalEntry = async (journal: JournalEntry): Promise<JournalEntry> => {
   const axios = await getAxiosInstance()
@@ -40,7 +41,7 @@ const getJournals = async (email:string): Promise<JournalEntry[]> => {
   })
 }
 
-const getJournalEmotionFeedback = async (description: string): Promise<{emotion: string}> => {
+const getJournalEmotionFeedback = async (description: string): Promise<{emotion: EmotionValues}> => {
   const axios = await getAxiosInstance()
   return await axios.post('/journal/feedback', { description })
     .then((response) => {

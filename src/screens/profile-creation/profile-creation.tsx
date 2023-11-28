@@ -23,7 +23,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
   const [localUser, setLocalUser] = useState<UserProfile>()
-  const {screenSize} = useScreenSize()
+  const {screenSize, isMediumScreen} = useScreenSize()
 
   useEffect(() => {
     (async function () {
@@ -56,7 +56,11 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
   }, [questions, currentQuestionIndex])
 
   const handlePrevQuestion = () => {
-    
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+    } else {
+      navigate('LogIn')
+    }
   }
 
   if (loadingQuestions) {
@@ -72,7 +76,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
             <Arrow color={'#fff'} onPress={handlePrevQuestion}/>
           </View>
 
-          <View style={{ position: 'absolute', top: 250, left: 200 }}>
+          <View style={isMediumScreen() ? { position: 'absolute', top: 200, left: 50 } : { position: 'absolute', top: 250, left: 200 }}>
             {currentQuestion.image}
           </View>
 
@@ -80,7 +84,7 @@ export const ProfileCreation = ({ navigation: { navigate } }: { navigation: Navi
             {currentQuestion.question.toUpperCase()}
           </Text>
 
-          <View style={{ flexDirection: 'row', alignSelf: 'center', bottom: 0, position: 'absolute', alignItems: 'center', justifyContent: 'space-around', width: screenSize.width }}>
+          <View style={{ flexDirection: 'row', alignSelf: 'center', bottom: 50, position: 'absolute', alignItems: 'center', justifyContent: 'space-around', width: screenSize.width }}>
             {currentQuestion?.input}
 
             <ProfileCreationFlowButtons

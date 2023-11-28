@@ -1,16 +1,24 @@
-import { ImageBackground, StyleSheet, TextInput, View } from 'react-native'
-import React, { useContext } from 'react'
+import { ImageBackground, NativeSyntheticEvent, StyleSheet, TextInput, TextInputChangeEventData, TextInputProps, View } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { TextCustom as Text } from '../atoms/text';
 import { SearchIcon } from '../../assets/icons/search-icon'
 import { UserContext } from '../../context/user-context';
 import { useScreenSize } from '../../hooks/useScreenSize';
 
 const Banner = () => {
-    const { dbUser } = useContext(UserContext);
-    const {isMediumScreen} = useScreenSize()
+    const { dbUser, setJournals, journals, searchJournals } = useContext(UserContext);
+    const { isMediumScreen } = useScreenSize()
+    const [searchInput, setSearchInput] = useState('')
+
+    const updateJournals = (text: string) => {
+        const input = text || ''
+        setSearchInput(input)
+        const newJournals = journals.filter(j => j.title.toLowerCase().includes(input.toLowerCase()) || j.description.toLowerCase().includes(input.toLowerCase()))
+        newJournals.length > 0 && input !== '' ? setJournals(newJournals) : searchJournals();
+    }
 
     return (
-        <ImageBackground style={isMediumScreen() ? styles.bannerMedium:styles.bannerLarge} source={require('../../assets/gradiants/Banner.png')} >
+        <ImageBackground style={isMediumScreen() ? styles.bannerMedium : styles.bannerLarge} source={require('../../assets/gradiants/Banner.png')} >
             <Text variant='medium'>
                 {`Hola ${dbUser?.name ? dbUser.name : ''}!`}
             </Text>
@@ -21,7 +29,7 @@ const Banner = () => {
                 <View style={{ padding: 6 }}>
                     <SearchIcon />
                 </View>
-                <TextInput style={{ width: '100%', color: 'black' }} />
+                <TextInput value={searchInput} onChangeText={updateJournals} style={{ width: '100%', color: 'black' }} />
             </View>
         </ImageBackground>
     )

@@ -11,9 +11,11 @@ import { JournalEntry } from '../utils/interfaces';
 import { UserContext } from '../context/user-context';
 import Spinner from '../components/atoms/spinner';
 
+export type EmotionValues = 'angry' | 'sad' | 'neutral' | 'happy' | 'love'
+
 export type Emotion = {
   emoji: any;
-  value: string;
+  value: EmotionValues;
 }
 
 type size = 'small' | 'normal' | 'large'
@@ -90,7 +92,11 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
         } else {
           console.error("Validation Error saving user profile with data: ", dbUser, title, description, selectedEmotion.value,)
         }
-      }).catch(err => clearSession())
+      }).catch(err => {
+        console.log(err)
+        clearSession()
+        return
+      })
   };
 
   if (loading) {
@@ -159,7 +165,7 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
       </View>
 
       <View>
-        <Button title="Enviar" textVariant='medium' variant={!error ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
+        <Button title="Enviar" textVariant='medium' variant={error ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
       </View>
     </ScrollView>
   );

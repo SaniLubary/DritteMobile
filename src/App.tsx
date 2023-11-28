@@ -58,11 +58,11 @@ const HomeTab = () => {
       tabBarLabel: 'INICIO',
     }} />
     <Tab.Screen name="CreateEntry" options={{ headerShown: false, tabBarLabelPosition: 'below-icon', tabBarIcon: () => <NewEntryIcon />, tabBarLabel: '', unmountOnBlur: true, headerTitle: 'Nueva entrada nya!' }} component={CreateEntry} />
-    <Tab.Screen name="Achievements" component={Home} options={{
+    {/* <Tab.Screen name="Achievements" component={Home} options={{
       headerTitle: () => <CustomHeader />,
       tabBarIcon: () => <></>,
       tabBarLabel: 'LOGROS'
-    }} />
+    }} /> */}
   </Tab.Navigator>
 }
 
@@ -77,11 +77,11 @@ const App = () => {
               <Stack.Screen name="LogIn" component={LogIn} />
               <Stack.Screen name="ProfileCreation" component={ProfileCreation} />
               <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
-                <Tab.Screen name="ViewEntry" options={{ headerTitle: 'Recuerdas esta entrada? nya!' }} component={ViewEntry} />
+                <Tab.Screen name="ViewEntry" options={{ headerTitle: 'Recuerdas esta entrada?' }} component={ViewEntry} />
                 <Tab.Screen name="Profile" options={{ headerTitle: 'Actualiza tu perfil!' }} component={Profile} />
-                <Tab.Screen name="PositiveEmojiResponse" options={{ headerTitle: 'Nice!' }} component={PositiveEmojiResponse} />
+                <Tab.Screen name="PositiveEmojiResponse" options={{ headerTitle: 'Genial!' }} component={PositiveEmojiResponse} />
                 <Tab.Screen name="NegativeEmojiResponse" options={{ headerTitle: 'Ohh :(' }} component={NegativeEmojiResponse} />
-                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Nice!' }} component={AnswerIntrospectiveQuestion} />
+                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Genial!' }} component={AnswerIntrospectiveQuestion} />
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

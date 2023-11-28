@@ -27,10 +27,10 @@ const ViewEntry = ({ navigation }: { navigation: Navigation }) => {
       </Text>}
       <ImageBackground source={require('../assets/bg.png')} style={styles.titleCard}>
         {emotions.filter(emotion => emotion.value === journal.emotion)[0].emoji('large')}
-        <View style={{ marginLeft: 8 }}>
+        <View style={{ marginLeft: 8, width: '50%'}}>
           <Text variant='normal' style={{ color: 'white' }}>Titulo</Text>
           <Text variant='medium' style={{ color: 'white' }}>{journal.title}</Text>
-          {journal.emotion === 'happy' || journal.emotion === 'loce' ?
+          {journal.emotion === 'happy' || journal.emotion === 'love' ?
             <Image style={{ width: 210, height: 190, position: 'absolute', top: 50 }} source={require('../assets/blobs/red-blob.png')} />
             : <Image style={{ width: 210, height: 190, position: 'absolute', top: 50 }} source={require('../assets/blobs/green-blob.png')} />}
         </View>

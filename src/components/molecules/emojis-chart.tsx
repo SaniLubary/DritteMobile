@@ -1,6 +1,8 @@
 import React from 'react';
 import { BarChart } from 'react-native-chart-kit';
 import { JournalEntry } from '@app/utils/interfaces';
+import { TextCustom } from '../atoms/text';
+import { View } from 'react-native';
 
 const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
     function emotionMapper(emotion: number | string): number | string {
@@ -16,53 +18,63 @@ const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
             case 'love':
                 return 5
             case '1':
-                return 'angry'
+                return 'mal'
             case '2':
-                return 'sad'
+                return 'triste'
             case '3':
                 return 'neutral'
             case '4':
-                return 'happy'
+                return 'feliz'
             case '5':
-                return 'love'
+                return 'super feliz'
             default:
                 return ''
         }
     }
 
-    const emojiData: number[] = journals.slice(-5).map(journal => emotionMapper(journal.emotion) as number);
+    const emojiData: number[] = journals.slice(0, 4).map(journal => emotionMapper(journal.emotion) as number);
     while ( emojiData.length < 5 ) {
         emojiData.push(1)
     }
 
+    if (emojiData.every(emoji => emoji === 5)) {
+        return <View>
+            <TextCustom variant='title'>Lo siento!</TextCustom>
+            <TextCustom variant='medium'>No tienes suficiente variedad de emociones para mostrar esta sección</TextCustom>
+        </View>
+    }
+
     return (
-        <BarChart
-            data={{
-                labels: [],
-                datasets: [
-                    {
-                        data: emojiData,
-                    },
-                ],
-            }}
-            yAxisLabel=''
-            yAxisSuffix=''
-            width={300}
-            height={100}
-            chartConfig={{
-                decimalPlaces: 0,
-                formatYLabel: (yLabel) => emotionMapper(yLabel) as string,
-                backgroundGradientFrom: '#ffc2fb',
-                barPercentage: 0.8,
-                backgroundGradientTo: '#ffe4fd',
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-            style={{
-                marginVertical: 8,
-                borderRadius: 16,
-            }}
-        />
+        <View>
+            <TextCustom variant='normal'>Estadistica de ultimas emociones</TextCustom>
+            <BarChart
+                data={{
+                    labels: [],
+                    datasets: [
+                        {
+                            data: emojiData,
+                        },
+                    ],
+                }}
+                yAxisLabel=''
+                yAxisSuffix=''
+                width={300}
+                height={100}
+                chartConfig={{
+                    decimalPlaces: 0,
+                    formatYLabel: (yLabel) => emotionMapper(yLabel) as string,
+                    backgroundGradientFrom: '#ffc2fb',
+                    barPercentage: 0.8,
+                    backgroundGradientTo: '#ffe4fd',
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                }}
+                style={{
+                    marginVertical: 8,
+                    borderRadius: 16,
+                }}
+            />
+        </View>
     );
 };
 

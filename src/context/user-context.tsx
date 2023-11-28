@@ -38,7 +38,8 @@ const UserProvider = ({ children }: {children: ReactElement}) => {
 
   const searchJournals = () => {
     if (dbUser?.email) {
-      getJournals(dbUser.email).then((journals) => {
+      getJournals(dbUser.email).then((journals):any => {
+        console.log("Got journals! -> ", journals)
         journals.reverse()
         setJournals(journals)
       }).catch((err) => console.log('Journals not found: ', err))

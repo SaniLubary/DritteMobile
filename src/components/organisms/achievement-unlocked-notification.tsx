@@ -40,8 +40,8 @@ const AchievementUnlockedNotification = ({ achievement, setShowAlert }: { achiev
             <Animated.View style={[styles.alert, { top: appearAnimation }]}>
                 <Text variant='medium' style={{ textAlign: 'center', marginBottom: 24 }}>Logro desbloqueado!</Text>
                 <View style={{ alignSelf: 'center' }}>
-                    <BrittaNice />
-                    <View style={{ flexDirection: 'column' }}>
+                    <BrittaNice width={100} height={200} style={{ alignSelf: 'center' }} />
+                    <View style={{ flexDirection: 'column', width: screenSize.width/2 }}>
                         <Text variant='normal'>{achievement.name}</Text>
                         <Text variant='normal'>{achievement.description}</Text>
                     </View>

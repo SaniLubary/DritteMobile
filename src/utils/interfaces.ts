@@ -1,3 +1,5 @@
+import { EmotionValues } from "@app/screens/create-entry";
+
 interface UserProfile {
   name?: string;
   deviceTokens?: string[];
@@ -20,7 +22,7 @@ interface JournalEntry {
   description: string;
   question?: string;
   response?: string;
-  emotion: string;
+  emotion: EmotionValues;
   createdAt?: Date
 }
 

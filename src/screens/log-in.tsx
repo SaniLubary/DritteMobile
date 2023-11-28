@@ -83,11 +83,13 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
               setError('Sesión expirada!');
             }
             setSavingUser(false)
+            return
           });
       }
-    })().catch((err) => {
+    })().catch((err): undefined => {
       console.log("Error no user/email found on auth0 user", err)
       setSavingUser(false)
+      return
     });
   }, [user]);
 
@@ -102,14 +104,16 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
   return (
     <View style={styles.container}>
       <BgCircles style={{ position: 'absolute' }} />
-      <Image style={{ width: 400, height: 900, top: 125, position: 'absolute' }} source={require('../assets/britta-happy-full-body.png')} />
+      <Image style={isMediumScreen() ? styles.imageMedium : styles.imageLarge} source={require('../assets/britta-happy-full-body.png')} />
       <View style={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={isMediumScreen() ? styles.greetingsMedium : styles.greetingsLarge}>
           <Text variant='title' style={{ textAlign: 'center', fontSize: 70, color: 'white' }}>DRITTE</Text>
           <Text variant='normal' style={{ textAlign: 'center', color: 'white' }}>{t('logIn:text').toUpperCase()}</Text>
         </View>
-        {error && <Text variant='medium' style={{ textAlign: 'center', color: 'red' }}>{error}</Text>}
-        <Button style={{ width: screenSize.width * 0.8, top: screenSize.height * 0.6, alignSelf: 'center' }} onPress={logIn} variant='primary' title={t('logIn:login')} />
+        <View style={{ width: screenSize.width * 0.8, top: screenSize.height * 0.6, alignSelf: 'center' }}>
+          {error && <Text variant='medium' style={{ textAlign: 'center', color: 'red' }}>{error}</Text>}
+          <Button onPress={logIn} variant='primary' title={'Iniciar sesión'} />
+        </View>
       </View>
     </View>
   );
@@ -118,11 +122,14 @@ export const LogIn = ({ navigation: { navigate } }: { navigation: Navigation }) 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F2AEC0',
+    flex: 1,
   },
   greetingsLarge: {
     margin: 50,
   },
   greetingsMedium: {
     margin: 10,
-  }
+  },
+  imageMedium: { width: 400, height: 900, top: 125, position: 'absolute' },
+  imageLarge: { width: 700, height: 1300, top: 300, position: 'absolute' }
 });

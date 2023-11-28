@@ -24,12 +24,16 @@ export async function getFcmToken() {
 export const notificationListener = (navigate: Navigation['navigate']) => {
     messaging().onNotificationOpenedApp(remoteMessage => {
         console.log("On notification Opened, should be navigating to ->", remoteMessage?.data?.screenToOpen, remoteMessage?.data?.entryToSee, remoteMessage?.data)
-        if (remoteMessage?.data?.screenToOpen && remoteMessage?.data?.entryToSee) {
-          navigate(remoteMessage.data.screenToOpen as 'ViewEntry', {entryId: remoteMessage.data.entryToSee as string})
+        if (remoteMessage?.data?.screenToOpen) {
+          if (remoteMessage?.data?.entryToSee) {
+            navigate(remoteMessage.data.screenToOpen as 'ViewEntry', {entryId: remoteMessage.data.entryToSee as string})
+          } else {
+            navigate(remoteMessage.data.screenToOpen as 'CreateEntry')
+          }
         }
       });
       
-      messaging()
+    messaging()
       .getInitialNotification()
       .then(remoteMessage => {
       console.log("Initial notification, should navigate to ->", remoteMessage?.data?.screenToOpen, remoteMessage?.data?.entryToSee, remoteMessage?.data)
