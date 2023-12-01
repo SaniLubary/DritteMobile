@@ -11,6 +11,7 @@ const AchievementUnlockedNotification = ({ achievement, setShowAlert }: { achiev
     const { screenSize } = useScreenSize()
 
     const appearAnimation = useRef(new Animated.Value(screenSize.height)).current;
+    const opacityAnimation = useRef(new Animated.Value(0)).current;
 
     const appear = () => {
         Animated.timing(appearAnimation, {
@@ -18,16 +19,24 @@ const AchievementUnlockedNotification = ({ achievement, setShowAlert }: { achiev
             duration: 500,
             useNativeDriver: false
         }).start();
+        Animated.timing(opacityAnimation, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: false
+        }).start();
     };
 
     const disappear = () => {
-        console.log('asdfasdf')
         Animated.timing(appearAnimation, {
             toValue: screenSize.height,
             duration: 500,
             useNativeDriver: false,
-            
         }).start(() => setShowAlert(false));
+        Animated.timing(opacityAnimation, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: false,
+        }).start();
     };
 
     useEffect(() => {
@@ -35,15 +44,20 @@ const AchievementUnlockedNotification = ({ achievement, setShowAlert }: { achiev
         setAchievementNotified(achievement._id)
     }, [])
 
+    console.log(opacityAnimation)
+    
     return (
-        <View style={{ alignItems: 'center' }}>
+        <View style={{ zIndex: 1 }}>
+            <Animated.View style={{ opacity: opacityAnimation ? opacityAnimation : 1, position: 'absolute', alignItems: 'center', width: screenSize.width, height: screenSize.height, backgroundColor: `#16161644` }}></Animated.View>
             <Animated.View style={[styles.alert, { top: appearAnimation }]}>
-                <Text variant='medium' style={{ textAlign: 'center', marginBottom: 24 }}>Logro desbloqueado!</Text>
+                <Text variant='normalBold' style={{ textAlign: 'center', marginBottom: 8 }}>Logro desbloqueado!</Text>
                 <View style={{ alignSelf: 'center' }}>
+                    <View style={{ flexDirection: 'column', width: screenSize.width/2 }}>
+                        <Text style={{ textAlign: 'center' }} variant='normal'>{achievement.name}</Text>
+                    </View>
                     <BrittaNice width={100} height={200} style={{ alignSelf: 'center' }} />
                     <View style={{ flexDirection: 'column', width: screenSize.width/2 }}>
-                        <Text variant='normal'>{achievement.name}</Text>
-                        <Text variant='normal'>{achievement.description}</Text>
+                        <Text style={{ textAlign: 'center' }} variant='normal'>{achievement.description}</Text>
                     </View>
                 </View>
                 <Button onPress={() => disappear()} variant='secondary' title='Cerrar' textVariant='normal' />
@@ -57,9 +71,9 @@ export { AchievementUnlockedNotification }
 const styles = StyleSheet.create({
     alert: {
         position: 'absolute',
+        alignSelf: 'center',
         padding: 30,
-        zIndex: 10,
-        backgroundColor: 'white',
-        borderRadius: 50
+        backgroundColor: '#ffffff',
+        borderRadius: 10,
     }
 })

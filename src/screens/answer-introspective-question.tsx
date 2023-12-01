@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Image, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '../components/atoms/button';
 import { Navigation, RootStackParamList } from '../App';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,10 @@ import { useAuth0 } from 'react-native-auth0';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { getJournal, saveJournalEntry } from '../services/journal-service';
 import { UserContext } from '../context/user-context';
-
+import Wave from '../assets/gradiants/wave'
+import Arrow from '../assets/icons/arrow'
+import Booble from '../assets/booble'
+import CheckMark from '../assets/icons/check-mark'
 
 const AnswerIntrospectiveQuestion = ({ navigation }: { navigation: Navigation }) => {
   const { t } = useTranslation();
@@ -43,7 +46,7 @@ const AnswerIntrospectiveQuestion = ({ navigation }: { navigation: Navigation })
         console.log("Journal found: ", journal)
         journal['question'] = route?.params?.['question']
         journal['response'] = response
-        dbUser?.email && saveJournalEntry({...journal, userEmail: dbUser.email}).then(res => {
+        dbUser?.email && saveJournalEntry({ ...journal, userEmail: dbUser.email }).then(res => {
           if (res) {
             searchJournals()
             navigation.navigate('Home')
@@ -57,27 +60,44 @@ const AnswerIntrospectiveQuestion = ({ navigation }: { navigation: Navigation })
 
   return (
     <View style={styles.container}>
+      <View style={{ position: 'absolute', right: 0 }}>
+        <Wave />
+      </View>
+
       <View>
-        <Text variant='title' style={{ textAlign: 'center', marginBottom: 14 }}>retrospectiva</Text>
-        <View>
-          <Text variant='normalBold'>{route?.params?.['question']}</Text>
+        <Arrow style={{ marginBottom: 6, alignItems: 'flex-end', transform: [{ rotate: '180deg' }] }} color='#838383' onPress={() => navigation.navigate('Home')} />
+
+        <Text variant='title'>retrospectiva</Text>
+        <Text variant='normalBold'>{route?.params?.['question']}</Text>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text variant='normalBold' >DESCRIPCION</Text>
+        <View style={styles.input}>
           <TextInput
-            style={styles.input}
             onChangeText={text => setResponse(text)}
             value={response}
-            placeholder="Para ser honesto hoy..."
+            style={{ width: '80%' }}
+            placeholder="Hoy fue un buen dia porque..."
             textAlignVertical='top'
             placeholderTextColor={"black"}
             multiline={true}
-            numberOfLines={10}
+            numberOfLines={4}
           />
-        </View>
-        <Text variant='normal' style={{ color: 'red' }}>{error}</Text>
-        <View style={{ marginTop: 0 }}>
-          <Text variant='normal'>Algunos tips que puedes seguir hoy:</Text>
-          <Text variant='normalBold'>respira hondo... toma un baño caliente..</Text>
+          <CheckMark color={error ? '#f31050' : '#28ad1c'} style={{ alignSelf: 'flex-end' }} />
         </View>
       </View>
+
+      <View style={{ top: 30 }}>
+        <View style={{ bottom: 100, left: 80 }}>
+          <Booble style={{ transform: [{ rotateY: '180deg' }] }} />
+          <Text style={{ color: 'white', bottom: 160, left: 70, width: 180, transform: [{ rotate: '30deg' }] }} variant='normal'>
+            Bien hecho! tu puedes!
+          </Text>
+        </View>
+        <Image style={{ width: 300, height: 550, top: 50, right: 140, position: 'absolute', transform: [{ 'rotateY': '180deg' }] }} source={require('../assets/britta-happy-full-body.png')} />
+      </View>
+
 
       <Button title="Listo" variant={error !== '' ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
     </View>
@@ -86,9 +106,13 @@ const AnswerIntrospectiveQuestion = ({ navigation }: { navigation: Navigation })
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
+    padding: 24,
     justifyContent: 'space-between',
+    backgroundColor: 'white',
+    height: '100%',
+  },
+  inputContainer: {
+    marginVertical: 4,
   },
   input: {
     color: 'black',

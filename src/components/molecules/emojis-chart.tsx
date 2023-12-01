@@ -45,8 +45,10 @@ const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
     }
 
     return (
-        <View>
-            <TextCustom variant='normal'>Estadistica de ultimas emociones</TextCustom>
+        <View style={{ alignItems: 'center' }}>
+            <View style={{ width: '80%', alignSelf: 'flex-start' }}>
+                <TextCustom variant='medium'>Estadistica de ultimas emociones</TextCustom>
+            </View>
             <BarChart
                 data={{
                     labels: [],
@@ -55,11 +57,11 @@ const EmojisChart = ({ journals }: { journals: JournalEntry[] }) => {
                             data: emojiData,
                         },
                     ],
-                }}
+                }}  
                 yAxisLabel=''
                 yAxisSuffix=''
                 width={300}
-                height={100}
+                height={200}
                 chartConfig={{
                     decimalPlaces: 0,
                     formatYLabel: (yLabel) => emotionMapper(yLabel) as string,

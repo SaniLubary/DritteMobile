@@ -1,8 +1,8 @@
 import * as React from "react"
 import { TouchableOpacity } from "react-native"
 import Svg, { Path } from "react-native-svg"
-const Arrow = ({color, disabled, onPress}: any) => (
-    <TouchableOpacity disabled={disabled} onPress={onPress}>
+const Arrow = ({color, disabled, onPress, style}: any) => (
+    <TouchableOpacity style={style} disabled={disabled} onPress={onPress}>
         <Svg
             width={38}
             height={38}

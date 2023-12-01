@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 const variantStyles = StyleSheet.create({
   primary: {
-    backgroundColor: '#D32455'
+    backgroundColor: '#F5649E'
   },
   secondary: {
     backgroundColor: '#FFF7FA'

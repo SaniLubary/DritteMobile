@@ -78,10 +78,10 @@ const App = () => {
               <Stack.Screen name="ProfileCreation" component={ProfileCreation} />
               <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
                 <Tab.Screen name="ViewEntry" options={{ headerTitle: 'Recuerdas esta entrada?' }} component={ViewEntry} />
-                <Tab.Screen name="Profile" options={{ headerTitle: 'Actualiza tu perfil!' }} component={Profile} />
-                <Tab.Screen name="PositiveEmojiResponse" options={{ headerTitle: 'Genial!' }} component={PositiveEmojiResponse} />
-                <Tab.Screen name="NegativeEmojiResponse" options={{ headerTitle: 'Ohh :(' }} component={NegativeEmojiResponse} />
-                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerTitle: 'Genial!' }} component={AnswerIntrospectiveQuestion} />
+                <Tab.Screen name="Profile" options={{ headerTitle: 'Lindo perfil!' }} component={Profile} />
+                <Tab.Screen name="PositiveEmojiResponse" options={{ headerShown: false }} component={PositiveEmojiResponse} />
+                <Tab.Screen name="NegativeEmojiResponse" options={{ headerShown: false }} component={NegativeEmojiResponse} />
+                <Tab.Screen name="AnswerIntrospectiveQuestion" options={{ headerShown: false }} component={AnswerIntrospectiveQuestion} />
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

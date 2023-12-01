@@ -1,19 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useAuth0 } from 'react-native-auth0';
 import { Navigation } from '../App';
 import { getUser } from '../services/user-service';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { emotions } from './create-entry';
 import Card from '../components/molecules/card';
 import { UserContext } from '../context/user-context';
 import Banner from '../components/organisms/banner'
-import { TextCustom as Text } from '../components/atoms/text';
-import { useScreenSize } from '../hooks/useScreenSize';
 import { getAchievements } from '../services/achievements';
 import { Achievements } from '../utils/interfaces';
 import { AchievementUnlockedNotification } from '../components/organisms/achievement-unlocked-notification'
-import { getJournals } from '../services/journal-service';
+import Pill from '../components/atoms/pill'
 
 const pills = ['FELIZ', 'TRISTE', 'NEUTRAL']
 
@@ -21,39 +19,14 @@ const Home = () => {
   const { user } = useAuth0();
   const { navigate } = useNavigation<Navigation>();
   const { journals, searchJournals, dbUser, setDbUser, setJournals } = useContext(UserContext);
-  const { isMediumScreen } = useScreenSize();
   const [showAlert, setShowAlert] = useState(false)
   const [achievement, setAchievement] = useState<Achievements>()
-  const [selectedPill, setSelectedPill] = useState('')
-  
+
   useEffect(() => {
     if (!user) {
       navigate('LogIn')
     }
   }, [user])
-
-  useEffect(() => {
-    if (dbUser?.email) {
-      getJournals(dbUser.email).then((journals) => {
-        journals.reverse()
-        switch (selectedPill) {
-          case 'FELIZ':
-            setJournals(journals.filter(j => j.emotion === 'love' || j.emotion === 'happy'))
-            break;
-          case 'TRISTE':
-            setJournals(journals.filter(j => j.emotion === 'angry' || j.emotion === 'sad'))
-            break;
-          case 'NEUTRAL':
-            setJournals(journals.filter(j => j.emotion === 'neutral'))
-            break
-          default:
-            searchJournals()
-            break;
-        }
-      }).catch((err) => console.log('Journals not found: ', err))
-    }
-  }, [selectedPill])
-
 
   const notify = (achievements: Achievements[]) => {
     setAchievement(achievements[0])
@@ -109,16 +82,7 @@ const Home = () => {
 
       <View style={styles.pillsContainer}>
         <ScrollView horizontal={true} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', }} >
-          {pills.map((pill) =>
-            <TouchableOpacity
-              onPress={() => pill !== selectedPill ? setSelectedPill(pill) : setSelectedPill('')}
-              key={pill}
-              style={[
-                styles.pill,
-                selectedPill === pill ? { backgroundColor: '#ffa3c8', borderWidth: 1, borderColor: '#d40000' } : { backgroundColor: 'pink' },
-                isMediumScreen() ? styles.pillMedium : styles.pillLarge]}>
-              <Text variant='normal'>{pill}</Text>
-            </TouchableOpacity>)}
+          {pills.map((pill) => <Pill key={pill} text={pill} />)}
         </ScrollView>
       </View>
 

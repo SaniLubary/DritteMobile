@@ -10,6 +10,10 @@ import { useAuth0 } from 'react-native-auth0';
 import { JournalEntry } from '../utils/interfaces';
 import { UserContext } from '../context/user-context';
 import Spinner from '../components/atoms/spinner';
+import Wave from '../assets/gradiants/wave'
+import Arrow from '../assets/icons/arrow'
+import CheckMark from '../assets/icons/check-mark'
+import EmojiPill from '../assets/gradiants/bg-emoji-pill'
 
 export type EmotionValues = 'angry' | 'sad' | 'neutral' | 'happy' | 'love'
 
@@ -20,7 +24,7 @@ export type Emotion = {
 
 type size = 'small' | 'normal' | 'large'
 
-const selectEmojiSize = (size: size) => size === 'small' ? { width: 60, height: 50 } : size === "large" ? { width: 120, height: 100 } : { width: 100, height: 80 }
+const selectEmojiSize = (size: size) => size === 'small' ? { width: 60, height: 50 } : size === "large" ? { width: 120, height: 100 } : { width: 85, height: 75 }
 
 export const emotions: Emotion[] = [
   { emoji: (size: size) => <Image style={selectEmojiSize(size)} source={require('../assets/emojis/mad.png')} />, value: 'angry' },
@@ -36,7 +40,7 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   const [description, setDescription] = useState<string>('');
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion>();
   const [emotionFeedback, setEmotionFeedback] = useState<Emotion>();
-  const [error, setError] = useState<{ error: string, input: string } | null>(null);
+  const [error, setError] = useState<{ input: string }[]>([]);
   const { user, clearSession } = useAuth0()
   const { searchJournals } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,20 +53,16 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
   }
 
   const isFormValid = () => {
+    let error = []
+
     if (!title) {
-      setError({ error: t('create-entry:title-required'), input: 'title' });
-      return false;
+      error.push({ input: 'title' })
     }
     if (!description) {
-      setError({ error: t('create-entry:description-required'), input: 'description' });
-      return false;
+      error.push({ input: 'description' })
     }
-    if (!selectedEmotion) {
-      setError({ error: t('create-entry:emotion-required'), input: 'emoji' });
-      return false;
-    }
-    setError(null)
-    return true
+    setError(error)
+    return error.length === 0
   }
 
   useEffect(() => {
@@ -103,69 +103,87 @@ const CreateEntry = ({ navigation }: { navigation: Navigation }) => {
     return <View style={{ flex: 1 }}><Spinner /></View>
   }
 
+  const Emoji = ({ emotion }: { emotion: Emotion }) => {
+    return (
+      <TouchableOpacity
+        key={emotion.value}
+        style={[{ marginHorizontal: 6 }, selectedEmotion?.value === emotion.value && { borderWidth: 3, borderColor: '#28ad1c84', borderRadius: 20 }]}
+        onPress={() => {
+          setSelectedEmotion(emotion);
+        }}
+      >
+        <EmojiPill color={emotionFeedback?.value === emotion.value ? '#c85daa' : null}>
+          <View style={{ alignItems: 'center', top: emotion.value === selectedEmotion?.value ? 0 : 8 }}>
+            {emotion.emoji(emotion.value === selectedEmotion?.value ? 'normal' : 'small')}
+            <Text style={{ position: 'absolute', bottom: -20 }} variant='normalBold'>{emotionFeedback?.value === emotion.value ? "Este?" : ""}</Text>
+          </View>
+        </EmojiPill>
+      </TouchableOpacity>
+    )
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text variant='title' style={{ textAlign: 'center' }}>mi entrada diaria</Text>
+      <View style={{ position: 'absolute', right: 0 }}>
+        <Wave />
+      </View>
 
       <View>
+        <Arrow style={{ marginBottom: 6, alignItems: 'flex-end', transform: [{ rotate: '180deg' }] }} color='#838383' onPress={() => navigation.navigate('Home')} />
+
+        <Text variant='title'>MI ENTRADA</Text>
+        <Text variant='normal'>Expresa tus emociones</Text>
+      </View>
+
+      <View style={{ marginVertical: 6 }}>
         <View style={styles.inputContainer}>
-          <Text variant='normalBold'>Titulo</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => setTitle(text)}
-            placeholderTextColor={"black"}
-            value={title}
-            placeholder="Un buen dia..."
-          />
-          {error && error.input === 'title' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
+          <Text variant='normalBold'>TITULO</Text>
+          <View style={styles.input}>
+            <TextInput
+              onChangeText={text => setTitle(text)}
+              placeholderTextColor={"black"}
+              value={title}
+              placeholder="Un buen dia..."
+            />
+            <CheckMark color={error && error.find(err => err.input === 'title') ? '#f31050' : '#28ad1c'} />
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text variant='normalBold' >Entrada</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => setDescription(text)}
-            onChange={() => giveEmotionFeedback()}
-            value={description}
-            placeholder="Hoy fue un buen dia porque..."
-            textAlignVertical='top'
-            placeholderTextColor={"black"}
-            multiline={true}
-            numberOfLines={4}
-          />
-          {error && error.input === 'description' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
+          <Text variant='normalBold' >DESCRIPCION</Text>
+          <View style={styles.input}>
+            <TextInput
+              onChangeText={text => setDescription(text)}
+              onChange={() => giveEmotionFeedback()}
+              value={description}
+              style={{ width: '80%' }}
+              placeholder="Hoy fue un buen dia porque..."
+              textAlignVertical='top'
+              placeholderTextColor={"black"}
+              multiline={true}
+              numberOfLines={4}
+            />
+            <CheckMark color={error && error.find(err => err.input === 'description') ? '#f31050' : '#28ad1c'} style={{ alignSelf: 'flex-end' }} />
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text variant='normalBold' >Emotion</Text>
+          <Text variant='normalBold' >EMOJI</Text>
           <View>
-            <Text variant='normal' style={{ width: 200 }}>Dejame adivinar o corrigeme... te representa...</Text>
+            <Text variant='normal'>Dejame adivinar el emoji!</Text>
+            <Text variant='normal'>O elije otro :)</Text>
           </View>
-          <View style={{ flexDirection: 'row', marginVertical: 8, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-            {emotions.map(emotion => {
-              return (
-                <TouchableOpacity
-                  key={emotion.value}
-                  onPress={() => {
-                    setSelectedEmotion(emotion)
-                  }}
-                >
-                  <View style={{ alignItems: 'center', }}>
-                    {emotion.emoji(emotion.value === selectedEmotion?.value ? 'normal' : 'small')}
-                    <Text variant='normal'>
-                      {emotionFeedback?.value === emotion.value ? "Este?" : ""}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )
-            })}
+          <View style={styles.emojisContainer}>
+            {emotions.slice(0, 3).map(emotion => <Emoji key={emotion.value} emotion={emotion} />)}
           </View>
-          {error && error.input === 'emoji' && <Text variant='normal' style={{ color: '#D32455' }}>{error.error}</Text>}
+          <View style={styles.emojisContainer}>
+            {emotions.slice(3, 5).map(emotion => <Emoji key={emotion.value} emotion={emotion} />)}
+          </View>
         </View>
       </View>
 
       <View>
-        <Button title="Enviar" textVariant='medium' variant={error ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
+        <Button title="Enviar" textVariant='medium' variant={error.find(err => err.input) ? 'disabled' : 'primary'} onPress={handleFormSubmit} />
       </View>
     </ScrollView>
   );
@@ -176,6 +194,7 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: 'space-between',
     backgroundColor: 'white',
+    minHeight: '100%',
   },
   inputContainer: {
     marginVertical: 4,
@@ -187,8 +206,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     fontSize: 16,
-    marginTop: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
+  emojisContainer: { flexDirection: 'row', marginVertical: 8, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }
 });
 
 
